@@ -1,3 +1,7 @@
 py/util.py
+py/Untitled.ipynb
+py/.ipynb_checkpoints/*
+
 py/__pycache__/*
 z_examples/*
+pic/*

@@ -1,0 +1,11 @@
+
+
+
+{
+    "bucket_name": "bucket1",
+    "project_name": "project1",
+    "privacy_ind": "Y",
+    "purpose": "project_used",
+    "permission": "RO",  
+    "quota" : "0"
+}

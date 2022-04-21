@@ -1,0 +1,10 @@
+
+
+
+{
+    "bucket_name": "bucket2",
+    "project_name": "project1",
+    "privacy_ind": "Y",
+    "purpose": "model_used",
+    "permission": "RW"
+}
