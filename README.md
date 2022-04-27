@@ -17,28 +17,40 @@
         "privacy_ind": "Y",
         "purpose": "project_used",
         "permission": "RO",  
-        "quota" : "0"
+        "quota" : "20"
     }  
 
 
-## get_all_buckets.py
+## buckets_summary.py
 ### 用途： 
-(1) 輸出所有buckets的object數量、所有tag的資料的dataframe的csv檔，並儲存至特定路徑  
-(2) 輸出所有project所使用的buckets數量、objects數量、quota的總額的dataframe的csv檔，  並儲存至特定路徑
+輸出所有buckets的object數量、所有tag的資料的dataframe的csv檔，並儲存至特定路徑  
 ### 使用方式： 
-    python get_all_buckets.py -f {file} -p {ps}
+    python buckets_summary.py -f {file} 
 
 ### 附註：
 -f: 輸出檔案的名稱{file}  
--p: 輸出檔案的用途{ps}
 
-get_df: 用途(1)，輸出可參考sample_output/df.csv  
-ps : 用途(2)，輸出可參考sample_output/project_summary.csv
+
+## projects_summary.py
+### 用途： 
+輸出所有project所使用的buckets數量、objects數量、quota的總額的dataframe的csv檔，並儲存至特定路徑
+### 使用方式： 
+    python projects_summary.py -f {file} 
+
+### 附註：
+-f: 輸出檔案的名稱{file}  
+
+
+## update_buckets_use.py
+### 用途： 
+將所有buckets的usage, quota, use_ratio, status的tag按照使用的狀況進行更新
+### 使用方式： 
+    python update_buckets_use.py 
 
 
 ## remove_all_buckets.py
 ### 用途： 
-刪除所有的buckets
+刪除所有的buckets(所有buckets需均為空)
 ### 使用方式： 
     python remove_all_buckets.py 
 

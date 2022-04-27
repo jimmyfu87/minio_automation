@@ -6,5 +6,6 @@
     "project_name": "project3",
     "privacy_ind": "N",
     "purpose": "model_used",
-    "permission": "RO" 
+    "permission": "RO" ,
+    "quota" : "5"
 }

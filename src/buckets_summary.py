@@ -1,15 +1,16 @@
 ## get_all_buckets.py
 
-import util
+from util import minio_client as client
 import pandas as pd 
 from dateutil import tz
 import argparse
 
-client = util.minio_client
-
 
 def get_all_buckets_df():
     buckets = client.list_buckets();
+    if len(buckets) == 0:
+        print('There is no any buckets')
+        raise 
     data = []
     for bucket in buckets:
         new_bucket = {}
@@ -43,41 +44,15 @@ def get_all_buckets_df():
     print('The dataframe is created successfully')
     return df
 
-def project_summary(df: pd.DataFrame):
-    project_gp = df.groupby('project_name')
-
-    # columns need to be count
-    count_df = project_gp[['bucket_name']].count()
-    count_df.rename(columns = {'bucket_name':'total_buckets'}, inplace = True)
-
-    # columns need to be sum    
-    sum_df = project_gp[['objects_num', 'quota' ]].sum()
-    sum_df.rename(columns = {'objects_num':'total_objects','quota':'total_quota(GB)'}, inplace = True)
-
-    # join two dataframe on index
-    project_df = count_df.join(sum_df)
-
-    return project_df
-
 
 if __name__== "__main__" :
     # get filename by arg
     parser = argparse.ArgumentParser() 
-    parser.add_argument("--filename", "-f", type=str, required=True, default = 'file')
-    parser.add_argument("--purpose", "-p", type=str, required=True, default='ps')
+    parser.add_argument("--filename", "-f", type = str, required = False, default = 'buckets_summary')
     args = parser.parse_args()
     
     df = get_all_buckets_df()
     filename = args.filename + '.csv'
-    purpose = args.purpose
-
-    # ps means project_summary
-    if  purpose == 'ps':
-        project_df = project_summary(df)
-        project_df.to_csv(filename)
-    elif purpose == 'get_df':
-        df.to_csv(filename)
-    else:
-        print('Unknown purpose')
+    df.to_csv(filename)
 
     print('The file is saved successfully')

@@ -1,10 +1,8 @@
 ## remove_all_buckets.py
 
 import logging
-from util import minio_client
+from util import minio_client as client
 
-
-client = minio_client
 
 def remove_all_buckets():
     buckets = client.list_buckets()
