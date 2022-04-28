@@ -1,15 +1,17 @@
 ## get_all_buckets.py
 
 from util import minio_client as client
+from util import get_logger
 import pandas as pd 
 from dateutil import tz
 import argparse
 
+logger = get_logger('buckets_summary')
 
 def get_all_buckets_df():
     buckets = client.list_buckets();
     if len(buckets) == 0:
-        print('There is no any buckets')
+        logger.error('There is no any buckets')
         raise 
     data = []
     for bucket in buckets:
@@ -41,7 +43,7 @@ def get_all_buckets_df():
     df['quota'] = df[int_col].astype('int')
     df['usage'] = df[float_col].astype('float')
     
-    print('The dataframe is created successfully')
+    logger.info('The dataframe is created successfully')
     return df
 
 
@@ -53,6 +55,8 @@ if __name__== "__main__" :
     
     df = get_all_buckets_df()
     filename = args.filename + '.csv'
-    df.to_csv(filename)
-
-    print('The file is saved successfully')
+    try:
+        df.to_csv(filename)
+        logger.info('The file is saved successfully')
+    except:
+        logger.error('The file is saved unsuccessfully')

@@ -2,6 +2,9 @@
 import argparse
 import pandas as pd 
 from buckets_summary import get_all_buckets_df
+from util import get_logger
+
+logger = get_logger('projects_summary')
 
 def projects_summary(df: pd.DataFrame):
     project_gp = df.groupby('project_name')
@@ -32,6 +35,11 @@ if __name__== "__main__" :
     df = get_all_buckets_df()
     filename = args.filename + '.csv'
     project_df = projects_summary(df)
-    project_df.to_csv(filename)
+    try:
+        project_df.to_csv(filename)
+        logger.info('The file is saved successfully')
+    except:
+        logger.error('The file is saved unsuccessfully')
 
-    print('The file is saved successfully')
+
+    

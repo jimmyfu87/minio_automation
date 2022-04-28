@@ -1,6 +1,7 @@
 ## util.py
-from email import policy
+from asyncio.log import logger
 import bmc
+import logging
 from minio import Minio
 
 # Single-Node
@@ -38,19 +39,6 @@ default_tags = {'usage' : '0', 'use_ratio' : '0', 'status' : 'Healthy'}
 use_ratio_threshold_dic = {'Danger': 0.8, 'Cautious': 0.4,  'Aware': 0.1}
 use_ratio_healthy_status_name = 'Healthy'
 
-def add_host(): 
-    # new config host of minio
-    url = "http://" + endpoint
-    add_host = bmc.config_host_add(alias = alias, url = url, username = access_key, password = secret_key)
-    if add_host.content['status'] == 'success':
-        print('Add Host successfully!')
-        return True
-    else:
-        err_message = add_host.content['error']['message']
-        err_cause = add_host.content['error']['cause']['message']
-        print('Error Message: ' + err_message)
-        print('Error Cause: ' + err_cause)
-        return False
 
 ### Policy
 
@@ -92,8 +80,25 @@ read_write_policy = {
 
 policy_set  = {'RO': read_only_policy, 'RW': read_write_policy}
 
-# minio_client = Minio(
-#         "play.min.io",
-#         access_key="Q3AM3UQ867SPQQA43P2F",
-#         secret_key="zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG",
-# )
+def get_logger(name):
+    logging.basicConfig(format = '%(asctime)s [%(levelname)s] %(name)s: %(message)s',
+                        datefmt = '%Y-%m-%d %H:%M:%S',
+                        level = logging.INFO)
+    logger = logging.getLogger(name)
+    return logger
+
+logger = get_logger('util')
+
+def add_host(): 
+    # new config host of minio
+    url = "http://" + endpoint
+    add_host = bmc.config_host_add(alias = alias, url = url, username = access_key, password = secret_key)
+    if add_host.content['status'] == 'success':
+        logger.info('Add Host successfully!')
+        return True
+    else:
+        err_message = add_host.content['error']['message']
+        err_cause = add_host.content['error']['cause']['message']
+        logger.error('Error Message: ' + err_message)
+        logger.error('Error Cause: ' + err_cause)
+        return False

@@ -2,7 +2,10 @@
 import bmc
 from util import minio_client as client
 from bmc._utils import Command
-from util import add_host, use_ratio_threshold_dic, use_ratio_healthy_status_name, alias
+from util import add_host, use_ratio_threshold_dic, use_ratio_healthy_status_name, alias, get_logger
+
+
+logger = get_logger('update_buckets_use')
 
 def get_all_bucket_name():
     # get name of all buckets
@@ -21,7 +24,7 @@ def get_all_bucket_usage_dic():
         # sum all object size
         bucket_usage = get_bucket_usage(path)
         # transfer Byte to Gib
-        bucket_usage_gib = bucket_usage / (1024**2)
+        bucket_usage_gib = bucket_usage / (1024**3)
         # set bucket usage dic
         bucket_usage_dic.update({bucket.name: bucket_usage_gib})
     return bucket_usage_dic
@@ -98,6 +101,6 @@ def get_quota(**kwargs):
         
 if __name__== "__main__" :
     if update_usage_quota():
-        print('Update usage of buckets successfully')
+        logger.info('Update usage of buckets successfully')
         if update_use_ratio_status():
-            print('Update usage ratio and status of buckets successfully')
+            logger.info('Update usage ratio and status of buckets successfully')

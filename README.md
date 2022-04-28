@@ -2,7 +2,7 @@
 
 ## create_buckets.py
 ### 用途：
-使用json檔建立多個有tag的buckets
+使用json檔建立多個有tag的buckets，會依據permission和quota設定policy和quota的limit
 ### 使用方式：
     python create_buckets.py -dir {../json_data}
 
@@ -54,5 +54,23 @@
 ### 使用方式： 
     python remove_all_buckets.py 
 
+
+## util.py
+### 用途： 
+儲存多個可客製化的參數，讓其餘程式可以重複利用，包含以下幾個部分 
+
+##### (1) 登入minio需要的值
+###### endpoint, access_key, secret_key, secure, alias
+
+##### (2) 設定buckets會有的tag種類
+###### 1.required_tags(使用者必須給定的tag): ['project_name', 'privacy_ind', 'purpose', 'permission', 'quota']
+###### 2.default_tags(系統直接預設的Tag): {'usage' : '0', 'use_ratio' : '0', 'status' : 'Healthy'}
+
+##### (3) 當bucket的use_ratio大於value則給予key當作該buckets的status，若皆小於則視為healthy
+###### 1. use_ratio_threshold_dic(bucket的status分類閥值的字典): {'Danger': 0.8, 'Cautious': 0.4,  'Aware': 0.1}
+###### 2. use_ratio_healthy_status_name(healthy狀態的名字): 'Healthy'
+
+##### (4) policy的模板
+###### read_only_policy(唯讀的policy), read_write_policy(讀寫的policy)
 
 
