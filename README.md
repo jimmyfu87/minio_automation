@@ -55,6 +55,13 @@
     python remove_all_buckets.py 
 
 
+## add_host.py
+### 用途： 
+建立使用mc指令的alias，建立一次即可，create_buckets時，設定quota和policy時會使用到
+### 使用方式： 
+    python remove_all_buckets.py 
+
+
 ## util.py
 ### 用途： 
 儲存多個可客製化的參數，讓其餘程式可以重複利用，包含以下幾個部分 
@@ -70,7 +77,7 @@
 ###### 1. use_ratio_threshold_dic(bucket的status分類閥值的字典): {'Danger': 0.8, 'Cautious': 0.4,  'Aware': 0.1}
 ###### 2. use_ratio_healthy_status_name(healthy狀態的名字): 'Healthy'
 
-##### (4) policy的模板
-###### read_only_policy(唯讀的policy), read_write_policy(讀寫的policy)
-
+##### (4) policy
+###### 1. policy的模板: read_only_policy(唯讀的policy, read_write_policy(讀寫的policy)
+###### 2. 暫時存放policy產生json檔的路徑: 
 
