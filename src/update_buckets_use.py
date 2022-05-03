@@ -1,8 +1,10 @@
 # update_usage.py
-import bmc
-from util import minio_client as client
+import sys
+sys.path.insert(0, '../')
+from bmc import ls
+from src.util import minio_client as client
 from bmc._utils import Command
-from util import use_ratio_threshold_dic, \
+from src.util import use_ratio_threshold_dic, \
                 use_ratio_healthy_status_name, alias, get_logger
 
 
@@ -11,7 +13,7 @@ logger = get_logger('update_buckets_use')
 
 def get_all_bucket_name():
     # get name of all buckets
-    bucket_content = bmc.ls(target=alias).content
+    bucket_content = ls(target=alias).content
     all_bucket_name = []
     for i in bucket_content:
         all_bucket_name.append(i['key'][:-1])
@@ -34,7 +36,7 @@ def get_all_bucket_usage_dic():
 
 
 def get_bucket_usage(path: str):
-    object_content = bmc.ls(target=path).content
+    object_content = ls(target=path).content
     bucket_usage = 0
     # if there is only one element in response
     if type(object_content) == dict:

@@ -1,8 +1,10 @@
 # projects_summary.py
+import sys
+sys.path.insert(0, '../')
 import argparse
 import pandas as pd
-from buckets_summary import get_all_buckets_df
-from util import get_logger
+from src.buckets_summary import get_all_buckets_df
+from src.util import get_logger
 
 logger = get_logger('projects_summary')
 
@@ -33,5 +35,5 @@ if __name__ == "__main__":
     try:
         project_df.to_csv(filename)
         logger.info('The file is saved successfully')
-    except:
+    except Exception:
         logger.error('The file is saved unsuccessfully')

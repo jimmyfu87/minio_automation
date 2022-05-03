@@ -1,7 +1,8 @@
 # get_all_buckets.py
-
-from util import minio_client as client
-from util import get_logger
+import sys
+sys.path.insert(0, '../')
+from src.util import minio_client as client
+from src.util import get_logger
 import pandas as pd
 from dateutil import tz
 import argparse
@@ -51,5 +52,5 @@ if __name__ == "__main__":
     try:
         df.to_csv(filename)
         logger.info('The file is saved successfully')
-    except:
+    except Exception:
         logger.error('The file is saved unsuccessfully')

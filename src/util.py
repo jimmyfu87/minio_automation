@@ -3,6 +3,8 @@ import logging
 from minio import Minio
 from jinja2 import Template
 
+HOME_PATH = '/Users/jimmyfu87/Github/esun/minio_automation'
+
 
 def get_logger(name):
     logging.basicConfig(format='%(asctime)s [%(levelname)s]'
@@ -47,7 +49,7 @@ use_ratio_threshold_dic = {'Danger': 0.8, 'Cautious': 0.4,  'Aware': 0.1}
 use_ratio_healthy_status_name = 'Healthy'
 
 # Policy
-policy_directory = '../policy_json/'
+policy_directory = 'policy_json'
 read_only_policy = \
                     '''{
                         "Version": "2012-10-17",
