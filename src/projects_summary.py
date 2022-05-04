@@ -1,10 +1,9 @@
 # projects_summary.py
-import sys
-sys.path.insert(0, '../')
+
 import argparse
 import pandas as pd
-from src.buckets_summary import get_all_buckets_df
-from src.util import get_logger
+from buckets_summary import get_all_buckets_df
+from util import get_logger
 
 logger = get_logger('projects_summary')
 

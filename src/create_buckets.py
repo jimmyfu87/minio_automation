@@ -1,15 +1,15 @@
 # create_all_buckets.py
-import sys
-sys.path.insert(0, '../')
-from src.util import minio_client as client
-from src.util import required_tags, default_tags, alias, policy_set, \
+
+from util import minio_client as client
+from util import required_tags, default_tags, alias, policy_set, \
                  policy_directory, get_logger, HOME_PATH
 from minio.commonconfig import Tags
 import argparse
 import json
 import os
 from bmc._utils import Command
-from bmc import admin_policy_set, admin_policy_add, admin_user_add
+from bmc import admin_policy_add, admin_user_add,\
+                admin_user_info
 import random
 import string
 
@@ -28,7 +28,6 @@ def create_buckets(bucket_set: dict):
         # make a bucket
         client.make_bucket(bucket_name)
         logger.info('%s is created successfully', bucket_name)
-
         # change quota limit
         bucket_path = alias + '/' + bucket_name
         quota = int(bucket_set['quota']) * (1024**3)
@@ -36,17 +35,22 @@ def create_buckets(bucket_set: dict):
             logger.info("%s's quota is set successfully", bucket_name)
         else:
             logger.error("%s's quota is set unsuccessfully", bucket_name)
+            return False
         # add user
         project_name = bucket_set['project_name']
         password = ''.join(random.choice(string.ascii_letters + string.digits)
                            for x in range(8))
         add_user_response = admin_user_add(target=alias, username=project_name,
-                                           password=password)
-        if add_user_response.content['status'] == 'success':
+                                           password=password).content
+        if add_user_response['status'] == 'success':
             logger.info("User:%s is set successfully", project_name)
-        elif add_user_response.content['status'] == 'error':
+        elif add_user_response['status'] == 'error':
             logger.error("User:%s is set unsuccessfully",
                          bucket_name)
+            err_message = add_user_response['error']['message']
+            err_cause = add_user_response['error']['cause']['message']
+            logger.error('Error Message: ' + err_message)
+            logger.error('Error Cause: ' + err_cause)
             return False
         # set policy
         policy_set_cp = policy_set.copy()
@@ -58,26 +62,48 @@ def create_buckets(bucket_set: dict):
         policy_file_path = policy_dir + policy_name + '.json'
         with open(policy_file_path, 'w') as f:
             json.dump(json.loads(policy), f, ensure_ascii=False)
-        set_policy_response = admin_policy_add(target=alias, name=policy_name,
-                                               file=policy_file_path)
-        if set_policy_response.content['status'] == 'success':
+        set_policy_response = admin_policy_add(target=alias, 
+                                               name=policy_name,
+                                               file=policy_file_path).content
+        if set_policy_response['status'] == 'success':
             logger.info("%s's policy is set successfully", bucket_name)
             os.remove(policy_file_path)
             logger.info("%s's policy json file is removed successfully",
                         bucket_name)
-        elif set_policy_response.content['status'] == 'error':
+        elif set_policy_response['status'] == 'error':
             logger.error("%s's policy is set unsuccessfully",
                          bucket_name)
+            err_message = set_policy_response['error']['message']
+            err_cause = set_policy_response['error']['cause']['message']
+            logger.error('Error Message: ' + err_message)
+            logger.error('Error Cause: ' + err_cause)
             return False
         # set policy to user
-        policy2user_response = admin_policy_set(target=alias, name=policy_name,
-                                                user=project_name)
-        if policy2user_response.content['status'] == 'success':
+        user_response = admin_user_info(target=alias, 
+                                        username=project_name).content
+        all_policy = [policy_name]
+        if user_response['status'] == 'success':
+            if 'policyName' in user_response.keys():
+                logger.info("%s has original policy",
+                            project_name)
+                original_policy = user_response['policyName']
+                all_policy.append(original_policy)
+            else:
+                logger.info("%s has no original policy",
+                            project_name)
+        policy2user_response = set_policy(target=alias,
+                                          policy=all_policy,
+                                          user=project_name).content
+        if policy2user_response['status'] == 'success':
             logger.info("Set %s to %s successfully",
                         policy_name, project_name)
         else:
             logger.error("Set %s to %s unsuccessfully",
                          policy_name, project_name)
+            err_message = policy2user_response['error']['message']
+            err_cause = policy2user_response['error']['cause']['message']
+            logger.error('Error Message: ' + err_message)
+            logger.error('Error Cause: ' + err_cause)
             return False
         # set tag
         if set_bucket_tags(bucket_set):
@@ -109,6 +135,14 @@ def change_quota(**kwargs):
         return True
     else:
         return False
+
+
+def set_policy(target, policy, user):
+    policy_ls = ','.join(policy)
+    cmd_line = 'mc {flags} admin policy set ' + \
+               target + ' ' + policy_ls + ' user=' + user
+    cmd = Command(cmd_line)
+    return cmd()
 
 
 if __name__ == "__main__":

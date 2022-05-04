@@ -1,8 +1,7 @@
 # get_all_buckets.py
-import sys
-sys.path.insert(0, '../')
-from src.util import minio_client as client
-from src.util import get_logger
+
+from util import minio_client as client
+from util import get_logger, all_tags
 import pandas as pd
 from dateutil import tz
 import argparse
@@ -13,8 +12,9 @@ logger = get_logger('buckets_summary')
 def get_all_buckets_df():
     buckets = client.list_buckets()
     if len(buckets) == 0:
-        logger.error('There is no any buckets')
-        raise
+        logger.debug('There is no any buckets')
+        empty_df = pd.DataFrame(columns=all_tags)
+        return empty_df
     data = []
     for bucket in buckets:
         new_bucket = {}
@@ -25,9 +25,9 @@ def get_all_buckets_df():
         local_date_time = bucket.creation_date.astimezone(local_zone)
         new_bucket.update({'create_time': local_date_time})
         # set the number of objects
-        objects_num = len(list(client.list_objects(bucket.name)))
+        objects_num = len(list(client.list_objects(bucket.name, recursive=True)))
         new_bucket.update({'objects_num': objects_num})
-        # set create_date
+        # set tags
         new_bucket.update(client.get_bucket_tags(bucket.name))
         # append dic to list
         data.append(new_bucket)

@@ -1,10 +1,10 @@
 # test_create_buckets.py
 import sys
 sys.path.insert(0, '../')
-from src.create_buckets import create_buckets
-from src.util import minio_client as client
-from src.util import default_tags, required_tags, alias
-from bmc._utils import Command
+from create_buckets import create_buckets, change_quota
+from update_buckets_use import get_quota
+from util import minio_client as client
+from util import default_tags, required_tags, alias
 from bmc import admin_policy_info
 
 
@@ -17,13 +17,9 @@ bucket_data = {
     "quota": "30"
 }
 
+# def test_change_quota():
+#     assert change_quota(target='', quota=10) == False
 
-def get_quota(**kwargs):
-    cmd = Command('mc {flags} admin bucket quota {target}/{bucket_name}')
-    response = cmd(**kwargs)
-    if response.content['status'] == 'success':
-        quota = response.content['quota'] / 1024**3
-    return quota
 
 
 def test_create_buckets():
@@ -50,3 +46,4 @@ def test_create_buckets():
         policy_name = bucket_name + '_' + policy_type + '_' + 'policy'
         response = admin_policy_info(target=alias, name=policy_name)
         assert response.content['status'] == 'success'
+        assert create_buckets(bucket_data) == False

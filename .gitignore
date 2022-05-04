@@ -6,4 +6,5 @@ z_examples/*
 pic/*
 policy_json/*
 .pytest_cache/*
-test/__pycache__/*
+src/test/__pycache__/*
+src/.coverage

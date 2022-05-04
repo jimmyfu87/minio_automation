@@ -81,3 +81,10 @@
 ###### 1. policy的模板: read_only_policy(唯讀的policy, read_write_policy(讀寫的policy)
 ###### 2. 暫時存放policy產生json檔的路徑: 
 
+## test/*
+### 用途： 
+測試function的單元測試
+### 使用方式： 
+    cd src/test
+    pytest
+

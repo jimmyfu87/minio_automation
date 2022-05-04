@@ -1,8 +1,7 @@
 # remove_all_buckets.py
-import sys
-sys.path.insert(0, '../')
-from src.util import minio_client as client
-from src.util import get_logger
+
+from util import minio_client as client
+from util import get_logger
 
 logger = get_logger('remove_all_buckets')
 

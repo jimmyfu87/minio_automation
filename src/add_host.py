@@ -1,8 +1,7 @@
 # add_host.py
-import sys
-sys.path.insert(0, '../')
+
 from bmc import config_host_add
-from src.util import get_logger, endpoint, access_key, secret_key, alias
+from util import get_logger, endpoint, access_key, secret_key, alias
 
 logger = get_logger('add_host')
 
@@ -18,6 +17,7 @@ def add_host():
     else:
         err_message = add_host.content['error']['message']
         err_cause = add_host.content['error']['cause']['message']
+        logger.error('Add Host unsuccessfully')
         logger.error('Error Message: ' + err_message)
         logger.error('Error Cause: ' + err_cause)
         return False

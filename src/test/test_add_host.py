@@ -2,9 +2,9 @@
 
 import sys
 sys.path.insert(0, '../')
-from src.add_host import add_host
+from add_host import add_host
 from bmc import config_host_list
-from src.util import alias
+from util import alias
 
 
 def test_add_host():

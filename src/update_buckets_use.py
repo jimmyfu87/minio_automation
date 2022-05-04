@@ -1,10 +1,9 @@
 # update_usage.py
-import sys
-sys.path.insert(0, '../')
+
 from bmc import ls
-from src.util import minio_client as client
+from util import minio_client as client
 from bmc._utils import Command
-from src.util import use_ratio_threshold_dic, \
+from util import use_ratio_threshold_dic, \
                 use_ratio_healthy_status_name, alias, get_logger
 
 
@@ -27,11 +26,9 @@ def get_all_bucket_usage_dic():
         # get buck path name
         path = alias + '/' + bucket.name
         # sum all object size
-        bucket_usage = get_bucket_usage(path)
-        # transfer Byte to Gib
-        bucket_usage_gib = bucket_usage / (1024**3)
+        bucket_usage = get_bucket_usage(path) 
         # set bucket usage dic
-        bucket_usage_dic.update({bucket.name: bucket_usage_gib})
+        bucket_usage_dic.update({bucket.name: bucket_usage})
     return bucket_usage_dic
 
 
@@ -41,6 +38,7 @@ def get_bucket_usage(path: str):
     # if there is only one element in response
     if type(object_content) == dict:
         object_content = [object_content]
+    # sum the file size
     for object_item in object_content:
         if object_item['type'] == 'file':
             bucket_usage = bucket_usage + object_item['size']
@@ -48,7 +46,9 @@ def get_bucket_usage(path: str):
         elif object_item['type'] == 'folder':
             folder_path = path + '/' + object_item['key'][:-1]
             bucket_usage = bucket_usage + get_bucket_usage(folder_path)
-    return bucket_usage
+    # transfer Byte to Gib
+    bucket_usage_gib = bucket_usage / (1024**3)
+    return bucket_usage_gib
 
 
 def divide_use_ratio_gp(use_ratio: float):
@@ -66,8 +66,14 @@ def divide_use_ratio_gp(use_ratio: float):
 
 
 def get_quota(**kwargs):
-    cmd = Command('mc {flags} admin bucket quota {alias}/{bucket_name}')
-    return cmd(**kwargs)
+    cmd = Command('mc {flags} admin bucket quota {target}/{bucket_name}')
+    response = cmd(**kwargs)
+    if response.content['status'] == 'success':
+        quota = int(response.content['quota'] / 1024**3)
+        logger.info('get_quota successfully')
+        return quota
+    else:
+        logger.error('Error occurs when get_quota')
 
 
 def update_usage_quota():
@@ -75,10 +81,9 @@ def update_usage_quota():
     for bucket_name, bucket_usage in bucket_usage_dic.items():
         bucket_tags = client.get_bucket_tags(bucket_name)
         bucket_tags['usage'] = str(bucket_usage)
-        bucket_quota = get_quota(alias=alias,
-                                 bucket_name=bucket_name).content['quota']
-        bucket_quota_gib = bucket_quota / (1024**3)
-        bucket_tags['quota'] = str(int(bucket_quota_gib))
+        bucket_quota_gib = get_quota(target=alias,
+                                     bucket_name=bucket_name)
+        bucket_tags['quota'] = str(bucket_quota_gib)
         client.set_bucket_tags(bucket_name, bucket_tags)
     return True
 
