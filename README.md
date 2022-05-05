@@ -4,10 +4,10 @@
 ### 用途：
 使用json檔建立多個有tag的buckets，會依據permission和quota設定policy和quota的limit
 ### 使用方式：
-    python create_buckets.py -dir {../json_data}
+    python create_buckets.py -d {../json_data}
 
 ### 附註：
--dir: 儲存所有json檔的資料夾路徑(../json_data)
+-d: 儲存所有json檔的資料夾路徑(../json_data)
 
 取得json_data資料夾的所有json檔，建立多個有tag的buckets，json檔範例如下  
     
@@ -81,10 +81,9 @@
 ###### 1. policy的模板: read_only_policy(唯讀的policy, read_write_policy(讀寫的policy)
 ###### 2. 暫時存放policy產生json檔的路徑: 
 
-## test/*
+## test.py
 ### 用途： 
-測試function的單元測試
+測試function的整合測試
 ### 使用方式： 
-    cd src/test
-    pytest
+    python test.py
 

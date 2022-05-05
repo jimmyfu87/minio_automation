@@ -25,13 +25,15 @@ def get_all_buckets_df():
         local_date_time = bucket.creation_date.astimezone(local_zone)
         new_bucket.update({'create_time': local_date_time})
         # set the number of objects
-        objects_num = len(list(client.list_objects(bucket.name, recursive=True)))
+        objects_num = len(list(client.list_objects(bucket.name,
+                                                   recursive=True)))
         new_bucket.update({'objects_num': objects_num})
         # set tags
         new_bucket.update(client.get_bucket_tags(bucket.name))
         # append dic to list
         data.append(new_bucket)
     df = pd.DataFrame(data)
+    df = df[['bucket_name', 'create_time', 'objects_num', 'permission', 'privacy_ind', 'project_name', 'purpose', 'quota', 'status', 'usage', 'use_ratio']]
     # change numeric type column
     int_col = ['quota']
     float_col = ['usage', 'use_ratio']

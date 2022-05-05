@@ -16,7 +16,7 @@ def projects_summary(df: pd.DataFrame):
     # columns need to be sum
     sum_df = project_gp[['objects_num', 'quota']].sum()
     sum_df.rename(columns={'objects_num': 'total_objects',
-                  'quota': 'total_quota(GB)'}, inplace=True)
+                  'quota': 'total_quota(GiB)'}, inplace=True)
     # join two dataframe on index
     project_df = count_df.join(sum_df)
     return project_df

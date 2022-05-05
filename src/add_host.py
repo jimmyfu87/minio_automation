@@ -21,3 +21,7 @@ def add_host():
         logger.error('Error Message: ' + err_message)
         logger.error('Error Cause: ' + err_cause)
         return False
+
+
+if __name__ == "__main__":
+    add_host()

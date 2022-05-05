@@ -26,7 +26,7 @@ def get_all_bucket_usage_dic():
         # get buck path name
         path = alias + '/' + bucket.name
         # sum all object size
-        bucket_usage = get_bucket_usage(path) 
+        bucket_usage = get_bucket_usage(path)
         # set bucket usage dic
         bucket_usage_dic.update({bucket.name: bucket_usage})
     return bucket_usage_dic
@@ -108,9 +108,24 @@ def update_use_ratio_status():
     return True
 
 
-if __name__ == "__main__":
+def update_buckets_use():
     if update_usage_quota():
-        logger.info('Update usage of buckets successfully')
+        logger.info('Update usage and quota of buckets successfully')
         if update_use_ratio_status():
-            logger.info('Update usage ratio and status of \
-                         buckets successfully')
+            logger.info('Update use_ratio and status of '\
+                        'buckets successfully')
+            return True
+        else:
+            logger.error('Update use_atio and status of '\
+                        'buckets unsuccessfully')
+            return False
+    else:
+        logger.error('Update usage quota of buckets unsuccessfully')
+        return False
+
+
+if __name__ == "__main__":
+    if update_buckets_use():
+        logger.info('Update buckets use successfully')
+    else:
+        logger.error('Update buckets use unsuccessfully')
