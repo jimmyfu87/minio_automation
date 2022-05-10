@@ -1,4 +1,4 @@
-# update_usage.py
+# update_buckets_use.py
 
 from bmc import ls
 from util import minio_client as client
@@ -69,6 +69,7 @@ def get_quota(**kwargs):
     cmd = Command('mc {flags} admin bucket quota {target}/{bucket_name}')
     response = cmd(**kwargs)
     if response.content['status'] == 'success':
+        # get quota and transfer to gib
         quota = int(response.content['quota'] / 1024**3)
         logger.info('get_quota successfully')
         return quota

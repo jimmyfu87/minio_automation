@@ -54,8 +54,10 @@ def create_buckets(apply_set: dict):
     project_name = apply_set['project_name']
     # add user
     add_user_check = False
+    # if type is 'init' add user
     if apply_set['type'] == 'init':
         add_user_check = True
+    # if type is 'extend' check user exists or not
     elif apply_set['type'] == 'extend':
         if check_user_exist(project_name):
             logger.info('%s exists', project_name)
@@ -63,6 +65,7 @@ def create_buckets(apply_set: dict):
             logger.error('User %s do not exist, please init project',
                          project_name)
             return False
+    # add user
     if add_user_check:
         if add_user(project_name) is False:
             return False
@@ -133,12 +136,15 @@ def change_quota_cmd(**kwargs):
 
 def add_user(project_name: str):
     username = project_name
+    # generate password
     password = ''.join(random.choice(string.ascii_letters + string.digits)
                        for x in range(password_len))
+    # check user exists or not
     if check_user_exist(username):
         logger.error("%s already exists, please change the project_name' ",
                      username)
         return False
+    # add user
     add_user_response = admin_user_add(target=alias, username=username,
                                        password=password).content
     if add_user_response['status'] == 'success':
@@ -156,6 +162,7 @@ def add_user(project_name: str):
 
 def add_policy(policy_set: dict):
     policy_name = policy_set['policy_name']
+    # check policy exists or not
     if check_policy_exist(policy_name):
         logger.info("%s already exists, do not need to add policy",
                     policy_name)
@@ -212,6 +219,7 @@ def set_policy2user(policy_set: dict):
         else:
             logger.info("%s has no original policy",
                         project_name)
+    # set policy to user
     policy2user_response = set_policy2user_cmd(target=alias,
                                                policy=all_policy,
                                                user=project_name).content

@@ -1,4 +1,4 @@
-# get_all_buckets.py
+# buckets_summary.py
 
 from util import minio_client as client
 from util import get_logger, all_tags
