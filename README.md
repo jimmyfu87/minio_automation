@@ -1,23 +1,44 @@
 # minio_automation
 
-## create_buckets.py
+## create_apply.py
 ### 用途：
-使用json檔建立多個有tag的buckets，會依據permission和quota設定policy和quota的limit
+使用json檔建立多個有tag的buckets，會依據permission和quota設定policy和quota的limit，並建立user及綁定policy和user，也可用於單獨申請policy
 ### 使用方式：
-    python create_buckets.py -d {../json_data}
+    python create_apply.py -d {../json_data/init}
 
 ### 附註：
--d: 儲存所有json檔的資料夾路徑(../json_data)
+-d: 儲存所有json檔的資料夾路徑(../json_data/init)   
+#### type   
+1.init: 代表project_name尚未建立為user，程式會先用project_name當作username建立user，會先檢查username是否存在，若username已經存在，為避免覆蓋user，會中止後續所有動作，若不存在，則會建立user並繼續後續動作  
+2.extend: 代表project_name已經建立為user，程式會先檢查username是否存在，若username未存在，會中止後續所有動作，若username存在則繼續進行後續動作
 
-取得json_data資料夾的所有json檔，建立多個有tag的buckets，json檔範例如下  
-    
     {
-        "bucket_name": "bucket1",
-        "project_name": "project1",
-        "privacy_ind": "Y",
-        "purpose": "project_used",
-        "permission": "RO",  
-        "quota" : "20"
+        "type" : "init",
+        "project_name":"project1",
+        "bucket":[
+            {
+                "bucket_name": "bucket1",
+                "quota": "20",
+                "privacy_ind": "Y",
+                "purpose": "model_used"
+            },
+            {
+                "bucket_name": "bucket2",
+                "quota": "30",
+                "privacy_ind": "N",
+                "purpose": "project_used"
+            }
+        ],
+        "policy": [
+            {
+                "bucket_name": "bucket1",
+                "permission": "RO"
+            },
+            {
+                "bucket_name": "bucket2",
+                "permission": "RW"
+            }
+        ]
     }  
 
 
@@ -48,13 +69,6 @@
     python update_buckets_use.py 
 
 
-## remove_all_buckets.py
-### 用途： 
-刪除所有的buckets(所有buckets需均為空)
-### 使用方式： 
-    python remove_all_buckets.py 
-
-
 ## add_host.py
 ### 用途： 
 建立使用mc指令的alias，建立一次即可，create_buckets時，設定quota和policy時會使用到
@@ -70,7 +84,7 @@
 ###### endpoint, access_key, secret_key, secure, alias
 
 ##### (2) 設定buckets會有的tag種類
-###### 1.required_tags(使用者必須給定的tag): ['project_name', 'privacy_ind', 'purpose', 'permission', 'quota']
+###### 1.required_tags(使用者必須給定的tag): ['project_name', 'privacy_ind', 'purpose', 'quota']
 ###### 2.default_tags(系統直接預設的Tag): {'usage' : '0', 'use_ratio' : '0', 'status' : 'Healthy'}
 
 ##### (3) 當bucket的use_ratio大於value則給予key當作該buckets的status，若皆小於則視為healthy
@@ -83,7 +97,12 @@
 
 ## test.py
 ### 用途： 
-測試function的整合測試
+測試function的整合測試 
+##### (1) 利用test_file/test_json建立兩個bucket，並進行測試bucket是否建立成功、quota_limit是否設定正確、user是否設定正確、policy是否設定並綁定user、tag是否設定正確
+##### (2) 放進1、10張圖片進入兩個bucket並進行update_bucket_use，並進行測試usage、use_ratio、status是否符合
+##### (3) 輸出projects_summary.csv檔，並測試比對是否跟預期的csv檔(test_folder/projects_summary.csv)相同
+##### (3) 輸出buckets_summary.csv檔，刪除create_date的欄位之後，並測試比對是否跟預期的csv檔(test_folder/buckets_summary.csv)相同
 ### 使用方式： 
+    cd src
     python test.py
 

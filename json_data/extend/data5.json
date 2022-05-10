@@ -1,0 +1,11 @@
+
+{
+    "type" : "extend",
+    "project_name":"project2",
+    "policy": [
+        {
+            "bucket_name": "bucket1",
+            "permission": "RO"
+        }
+    ]
+}

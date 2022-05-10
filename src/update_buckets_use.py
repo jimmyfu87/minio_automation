@@ -112,12 +112,12 @@ def update_buckets_use():
     if update_usage_quota():
         logger.info('Update usage and quota of buckets successfully')
         if update_use_ratio_status():
-            logger.info('Update use_ratio and status of '\
+            logger.info('Update use_ratio and status of '
                         'buckets successfully')
             return True
         else:
-            logger.error('Update use_atio and status of '\
-                        'buckets unsuccessfully')
+            logger.error('Update use_ratio and status of '
+                         'buckets unsuccessfully')
             return False
     else:
         logger.error('Update usage quota of buckets unsuccessfully')

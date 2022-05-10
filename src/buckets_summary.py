@@ -33,7 +33,9 @@ def get_all_buckets_df():
         # append dic to list
         data.append(new_bucket)
     df = pd.DataFrame(data)
-    df = df[['bucket_name', 'create_time', 'objects_num', 'permission', 'privacy_ind', 'project_name', 'purpose', 'quota', 'status', 'usage', 'use_ratio']]
+    df = df[['bucket_name', 'create_time', 'objects_num', 'privacy_ind',
+             'project_name', 'purpose', 'quota', 'status',
+             'usage', 'use_ratio']]
     # change numeric type column
     int_col = ['quota']
     float_col = ['usage', 'use_ratio']

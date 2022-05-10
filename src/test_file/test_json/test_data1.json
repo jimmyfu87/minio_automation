@@ -1,0 +1,20 @@
+
+
+{   
+    "type": "init",
+    "project_name": "project1",
+    "bucket":[
+        {
+            "bucket_name": "testbucket1",
+            "quota": "1",
+            "privacy_ind": "Y",
+            "purpose": "model_used"
+        }
+    ],
+    "policy":[
+        {
+            "bucket_name": "testbucket1",
+            "permission": "RW"
+        }
+    ]
+}

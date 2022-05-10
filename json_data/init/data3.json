@@ -1,0 +1,19 @@
+
+{
+    "type" : "init",
+    "project_name":"project3",
+    "bucket":[
+        {
+            "bucket_name": "bucket5",
+            "quota": "20",
+            "privacy_ind": "Y",
+            "purpose": "project_used"
+        }
+    ],
+    "policy": [
+        {
+            "bucket_name": "bucket5",
+            "permission": "RO"
+        }
+    ]
+}

@@ -1,0 +1,19 @@
+
+{
+    "type" : "extend",
+    "project_name":"project1",
+    "bucket":[
+        {
+            "bucket_name": "bucket6",
+            "quota": "20",
+            "privacy_ind": "Y",
+            "purpose": "project_used"
+        }
+    ],
+    "policy": [
+        {
+            "bucket_name": "bucket6",
+            "permission": "RO"
+        }
+    ]
+}

@@ -1,3 +1,0 @@
-,bucket_name,create_time,objects_num,permission,privacy_ind,project_name,purpose,quota,status,usage,use_ratio
-0,testbucket1,2022-04-21 13:48:58.136000+08:00,1,RW,Y,project1,model_used,1,Healthy,0.000336989,0.000336989
-1,testbucket2,2022-04-21 13:49:00.678000+08:00,10,RO,N,project1,model_used,50,Healthy,0.003369888,6.74E-05

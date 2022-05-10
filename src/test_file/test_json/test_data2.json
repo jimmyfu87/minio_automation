@@ -1,0 +1,21 @@
+
+
+{   
+    "type": "extend",
+    "project_name": "project1",
+    "bucket":[
+        {
+            "bucket_name": "testbucket2",
+            "quota": "50",
+            "privacy_ind": "N",
+            "purpose": "model_used"
+        }
+    ],
+    "policy":[
+        {
+            "bucket_name": "testbucket2",
+            "permission": "RO"
+        }
+    ]
+}
+

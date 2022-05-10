@@ -14,12 +14,6 @@ def get_logger(name):
     logger = logging.getLogger(name)
     return logger
 
-# Single-Node
-# endpoint = "127.0.0.1:9000/"
-# access_key = "esun1313"
-# secret_key = "esun1313"
-# secure = False
-
 
 # Distribute-Node
 endpoint = "127.0.0.1:9000"
@@ -39,7 +33,7 @@ minio_client = Minio(
 # Tag
 # 使用者會給的Tag
 required_tags = ['project_name', 'privacy_ind', 'purpose',
-                 'permission', 'quota']
+                 'quota']
 
 # 系統直接預設的Tag
 default_tags = {'usage': '0', 'use_ratio': '0', 'status': 'Healthy'}
@@ -50,6 +44,9 @@ all_tags = required_tags + list(default_tags.keys())
 # Use ratio threshold
 use_ratio_threshold_dic = {'Danger': 0.8, 'Cautious': 0.4,  'Aware': 0.1}
 use_ratio_healthy_status_name = 'Healthy'
+
+# the length of password
+password_len = 8
 
 # Policy
 policy_directory = 'policy_json'
@@ -92,5 +89,5 @@ read_write_policy = \
                     }'''
 
 
-policy_set = {'RO': Template(read_only_policy),
-              'RW': Template(read_write_policy)}
+policy_temp_set = {'RO': Template(read_only_policy),
+                   'RW': Template(read_write_policy)}
