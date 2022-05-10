@@ -73,7 +73,7 @@
 ### 用途： 
 建立使用mc指令的alias，建立一次即可，create_buckets時，設定quota和policy時會使用到
 ### 使用方式： 
-    python remove_all_buckets.py 
+    python add_host.py 
 
 
 ## util.py
