@@ -27,8 +27,9 @@ def get_all_bucket_usage_dic():
         path = alias + '/' + bucket.name
         # sum all object size
         bucket_usage = get_bucket_usage(path)
+        bucket_usage_gib = bucket_usage / (1024**3)
         # set bucket usage dic
-        bucket_usage_dic.update({bucket.name: bucket_usage})
+        bucket_usage_dic.update({bucket.name: bucket_usage_gib})
     return bucket_usage_dic
 
 
@@ -46,9 +47,7 @@ def get_bucket_usage(path: str):
         elif object_item['type'] == 'folder':
             folder_path = path + '/' + object_item['key'][:-1]
             bucket_usage = bucket_usage + get_bucket_usage(folder_path)
-    # transfer Byte to Gib
-    bucket_usage_gib = bucket_usage / (1024**3)
-    return bucket_usage_gib
+    return bucket_usage
 
 
 def divide_use_ratio_gp(use_ratio: float):
