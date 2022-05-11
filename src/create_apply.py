@@ -52,11 +52,10 @@ def check_policy_exist(policy_name: str):
 
 def create_buckets(apply_set: dict):
     project_name = apply_set['project_name']
-    # add user
-    add_user_check = False
     # if type is 'init' add user
     if apply_set['type'] == 'init':
-        add_user_check = True
+        if add_user(project_name) is False:
+            return False
     # if type is 'extend' check user exists or not
     elif apply_set['type'] == 'extend':
         if check_user_exist(project_name):
@@ -64,10 +63,6 @@ def create_buckets(apply_set: dict):
         else:
             logger.error('User %s do not exist, please init project',
                          project_name)
-            return False
-    # add user
-    if add_user_check:
-        if add_user(project_name) is False:
             return False
     # make a bucket
     if 'bucket' in apply_set.keys():
@@ -136,14 +131,14 @@ def change_quota_cmd(**kwargs):
 
 def add_user(project_name: str):
     username = project_name
-    # generate password
-    password = ''.join(random.choice(string.ascii_letters + string.digits)
-                       for x in range(password_len))
     # check user exists or not
     if check_user_exist(username):
         logger.error("%s already exists, please change the project_name' ",
                      username)
         return False
+    # generate password
+    password = ''.join(random.choice(string.ascii_letters + string.digits)
+                       for x in range(password_len))
     # add user
     add_user_response = admin_user_add(target=alias, username=username,
                                        password=password).content

@@ -34,8 +34,8 @@ def get_all_buckets_df():
         data.append(new_bucket)
     df = pd.DataFrame(data)
     df = df[['bucket_name', 'create_time', 'objects_num', 'privacy_ind',
-             'project_name', 'purpose', 'quota',
-             'usage', 'use_ratio', 'status']]
+             'project_name', 'purpose', 'usage', 
+             'quota', 'use_ratio', 'status']]
     # change numeric type column
     int_col = ['quota']
     float_col = ['usage', 'use_ratio']
