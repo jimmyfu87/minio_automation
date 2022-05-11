@@ -1,4 +1,4 @@
-project_name,total_buckets,total_objects,total_quota(GB)
+project_name,total_buckets,total_objects,total_quota(GiB)
 project1,2,18,37
 project2,6,48,359
 project3,2,13,20
