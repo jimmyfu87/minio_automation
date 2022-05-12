@@ -50,7 +50,7 @@ def check_policy_exist(policy_name: str):
         return False
 
 
-def create_buckets(apply_set: dict):
+def create_apply(apply_set: dict):
     project_name = apply_set['project_name']
     # if type is 'init' add user
     if apply_set['type'] == 'init':
@@ -264,7 +264,7 @@ if __name__ == "__main__":
         file_name = os.path.join(args.dir, name)
         with open(file_name) as apply_data:
             data = json.load(apply_data)
-            if create_buckets(data):
+            if create_apply(data):
                 logger.info('Finish create and set %s successfully',
                             file_name)
             else:
