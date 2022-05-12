@@ -25,9 +25,7 @@ def check_user_exist(username: str):
         user_ls.append(users)
     elif type(users) == list:
         user_ls = users
-    username_ls = []
-    for user in user_ls:
-        username_ls.append(user['accessKey'])
+    username_ls = [user['accessKey'] for user in user_ls]
     if username in username_ls:
         return True
     else:
