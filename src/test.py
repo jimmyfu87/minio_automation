@@ -18,14 +18,17 @@ pic_size_gib = os.path.getsize(pic_path) / 1024**3
 update_usage = [pic_size_gib, pic_size_gib*10]
 update_use_ratio = [pic_size_gib/1, (pic_size_gib*10)/50]
 update_status = ['Healthy', 'Healthy']
-projects_summary_path = 'test_file/projects_summary.csv'
-buckets_summary_path = 'test_file/buckets_summary.csv'
+test_file_path = 'test_file/'
+projects_summary_path =  join(test_file_path, 'projects_summary.csv')
+buckets_summary_path = join(test_file_path, 'buckets_summary.csv')
+test_projects_summary_path =  join(test_file_path, 'test_projects_summary.csv')
+test_buckets_summary_path = join(test_file_path, 'test_buckets_summary.csv')
 
 
 def get_test_apply_set():
     test_apply_sets = []
     for i in range(1, 3, 1):
-        file_name = 'test_file/test_json/test_data' + str(i) + '.json'
+        file_name = join(test_file_path,'test_json/test_data') + str(i) + '.json'
         with open(file_name) as bucket_data:
             data = json.load(bucket_data)
             test_apply_sets.append(data)
@@ -110,14 +113,15 @@ def test_update_buckets_use(test_buckets, update_usage,
 
 def test_projects_summary():
     new_df = pd.read_csv(projects_summary_path)
-    correct_df = pd.read_csv('test_file/test_projects_summary.csv')
+    correct_df = pd.read_csv(test_projects_summary_path)
     pd.testing.assert_frame_equal(new_df, correct_df, check_dtype=True)
     logger.info('Finish test_projects_summary successfully')
 
 
 def test_buckets_summary():
     new_df = pd.read_csv(buckets_summary_path)
-    correct_df = pd.read_csv('test_file/test_buckets_summary.csv')
+    correct_df = pd.read_csv(test_buckets_summary_path)
+    # drop create time and compare two dataframe
     new_df.drop(columns=['create_time'], inplace=True)
     correct_df.drop(columns=['create_time'], inplace=True)
     pd.testing.assert_frame_equal(new_df, correct_df, check_dtype=True)
