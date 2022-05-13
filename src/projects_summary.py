@@ -27,8 +27,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--filename", "-f", type=str,
                         required=False, default='projects_summary')
+    parser.add_argument("--env", "-e", type=str, required=True)
     args = parser.parse_args()
-    df = get_all_buckets_df()
+    df = get_all_buckets_df(args.env)
     filename = args.filename + '.csv'
     project_df = projects_summary(df)
     try:

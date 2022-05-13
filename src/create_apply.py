@@ -1,9 +1,10 @@
 # create_apply.py
 
-from util import minio_client as client
-from util import required_tags, default_tags, alias, policy_temp_set, \
-                 policy_directory, get_logger, HOME_PATH, password_len
+from util import required_tags, default_tags, policy_temp_set, \
+                 policy_directory, get_logger, HOME_PATH, password_len,\
+                 env_file_dir
 from minio.commonconfig import Tags
+from minio_client import minio_client
 import argparse
 import json
 import os
@@ -13,12 +14,13 @@ from bmc import admin_policy_add, admin_user_add,\
                 admin_policy_list
 import random
 import string
+from minio import Minio
 
 
 logger = get_logger('create_apply')
 
 
-def check_user_exist(username: str):
+def check_user_exist(username: str, alias: str):
     users = admin_user_list(target=alias).content
     user_ls = []
     if type(users) == dict:
@@ -32,7 +34,7 @@ def check_user_exist(username: str):
         return False
 
 
-def check_policy_exist(policy_name: str):
+def check_policy_exist(policy_name: str, alias: str):
     policies = admin_policy_list(target=alias).content
     policy_ls = []
     if type(policies) == dict:
@@ -48,115 +50,10 @@ def check_policy_exist(policy_name: str):
         return False
 
 
-def create_apply(apply_set: dict):
-    project_name = apply_set['project_name']
-    # if type is 'init' add user
-    if apply_set['type'] == 'init':
-        if add_user(project_name) is False:
-            return False
-    # if type is 'extend' check user exists or not
-    elif apply_set['type'] == 'extend':
-        if check_user_exist(project_name):
-            logger.info('%s exists', project_name)
-        else:
-            logger.error('User %s do not exist, please init project',
-                         project_name)
-            return False
-    # make a bucket
-    if 'bucket' in apply_set.keys():
-        all_buckets = apply_set['bucket']
-        for bucket in all_buckets:
-            bucket_set = bucket
-            bucket_set.update({'project_name': project_name})
-            bucket_name = bucket_set['bucket_name']
-            quota = bucket_set['quota']
-            # check bucket_name exists or not
-            if client.bucket_exists(bucket_name):
-                logger.error('%s already exists, please change bucket_name',
-                             bucket_name)
-                return False
-            client.make_bucket(bucket_name)
-            logger.info('%s is created successfully', bucket_name)
-            # change quota limit
-            if change_quota(bucket_name, quota) is not True:
-                return False
-            # set tag
-            if set_bucket_tags(bucket_set):
-                logger.info("%s's tags are set successfully", bucket_name)
-            else:
-                logger.error("%s's tags are set unsuccessfully", bucket_name)
-                return False
-    # add policy and set policy to user
-    if 'policy' in apply_set.keys():
-        all_policies = apply_set['policy']
-        for policy in all_policies:
-            policy_set = policy
-            # get bucket_name
-            bucket_name = policy_set['bucket_name']
-            # get policy_type
-            policy_type = policy_set['permission']
-            # generate policy name ex: 'bucket8_RO_policy'
-            policy_name = bucket_name + '_' + policy_type + '_' + 'policy'
-            policy_set.update({'project_name': project_name})
-            policy_set.update({'policy_name': policy_name})
-            if add_policy(policy_set) is not True:
-                return False
-            if set_policy2user(policy_set) is not True:
-                return False
-    return True
-
-
-def change_quota(bucket_name: str, quota: str):
-    # change quota limit
-    bucket_path = alias + '/' + bucket_name
-    quota = int(quota) * (1024**3)
-    if change_quota_cmd(target=bucket_path, quota=quota):
-        logger.info("%s's quota is set successfully", bucket_name)
-        return True
-    else:
-        logger.error("%s's quota is set unsuccessfully", bucket_name)
-        return False
-
-
-def change_quota_cmd(**kwargs):
-    cmd = Command('mc {flags} admin bucket quota {target} --hard {quota}')
-    response = cmd(**kwargs)
-    if response.content['status'] == 'success':
-        return True
-    else:
-        return False
-
-
-def add_user(project_name: str):
-    username = project_name
-    # check user exists or not
-    if check_user_exist(username):
-        logger.error("%s already exists, please change the project_name' ",
-                     username)
-        return False
-    # generate password
-    password = ''.join(random.choice(string.ascii_letters + string.digits)
-                       for x in range(password_len))
-    # add user
-    add_user_response = admin_user_add(target=alias, username=username,
-                                       password=password).content
-    if add_user_response['status'] == 'success':
-        logger.info("User:%s is set successfully", project_name)
-        return True
-    elif add_user_response['status'] == 'error':
-        logger.error("User:%s is set unsuccessfully",
-                     username)
-        err_message = add_user_response['error']['message']
-        err_cause = add_user_response['error']['cause']['message']
-        logger.error('Error Message: ' + err_message)
-        logger.error('Error Cause: ' + err_cause)
-        return False
-
-
-def add_policy(policy_set: dict):
+def add_policy(policy_set: dict, alias: str):
     policy_name = policy_set['policy_name']
     # check policy exists or not
-    if check_policy_exist(policy_name):
+    if check_policy_exist(policy_name, alias):
         logger.info("%s already exists, do not need to add policy",
                     policy_name)
         return True
@@ -196,7 +93,7 @@ def add_policy(policy_set: dict):
         return False
 
 
-def set_policy2user(policy_set: dict):
+def set_policy2user(policy_set: dict, alias: str):
     project_name = policy_set['project_name']
     policy_name = policy_set['policy_name']
     user_response = admin_user_info(target=alias,
@@ -238,7 +135,7 @@ def set_policy2user_cmd(target, policy, user):
     return cmd()
 
 
-def set_bucket_tags(bucket_set: dict):
+def set_bucket_tags(bucket_set: dict, client: Minio):
     bucket_name = bucket_set['bucket_name']
     tag_to_set = Tags.new_bucket_tags()
     # set required tags by json file
@@ -249,6 +146,117 @@ def set_bucket_tags(bucket_set: dict):
         tag_to_set[key] = default_tags[key]
     # set tags
     client.set_bucket_tags(bucket_name, tag_to_set)
+    return True
+
+
+def change_quota(bucket_name: str, quota: str, alias: str):
+    # change quota limit
+    bucket_path = alias + '/' + bucket_name
+    quota = int(quota) * (1024**3)
+    if change_quota_cmd(target=bucket_path, quota=quota):
+        logger.info("%s's quota is set successfully", bucket_name)
+        return True
+    else:
+        logger.error("%s's quota is set unsuccessfully", bucket_name)
+        return False
+
+
+def change_quota_cmd(**kwargs):
+    cmd = Command('mc {flags} admin bucket quota {target} --hard {quota}')
+    response = cmd(**kwargs)
+    if response.content['status'] == 'success':
+        return True
+    else:
+        return False
+
+
+def add_user(project_name: str, alias: str):
+    username = project_name
+    # check user exists or not
+    if check_user_exist(username, alias):
+        logger.error("%s already exists, please change the project_name' ",
+                     username)
+        return False
+    # generate password
+    password = ''.join(random.choice(string.ascii_letters + string.digits)
+                       for x in range(password_len))
+    # add user
+    add_user_response = admin_user_add(target=alias, username=username,
+                                       password=password).content
+    if add_user_response['status'] == 'success':
+        logger.info("User:%s is set successfully", project_name)
+        return True
+    elif add_user_response['status'] == 'error':
+        logger.error("User:%s is set unsuccessfully",
+                     username)
+        err_message = add_user_response['error']['message']
+        err_cause = add_user_response['error']['cause']['message']
+        logger.error('Error Message: ' + err_message)
+        logger.error('Error Cause: ' + err_cause)
+        return False
+
+
+def create_apply(apply_set: dict):
+    env_name = apply_set['env']
+    env_filename = env_file_dir + '/' + env_name + '.json'
+    with open(env_filename) as env_json:
+        env_data = json.load(env_json)
+    project_name = apply_set['project_name']
+    alias = env_data['alias']
+    client = minio_client(env_data).get_client()
+    # if type is 'init' add user
+    if apply_set['type'] == 'init':
+        if add_user(project_name, alias) is False:
+            return False
+    # if type is 'extend' check user exists or not
+    elif apply_set['type'] == 'extend':
+        if check_user_exist(project_name, alias):
+            logger.info('%s exists', project_name)
+        else:
+            logger.error('User %s do not exist, please init project',
+                         project_name)
+            return False
+    # make a bucket
+    if 'bucket' in apply_set.keys():
+        all_buckets = apply_set['bucket']
+        for bucket in all_buckets:
+            bucket_set = bucket
+            bucket_set.update({'project_name': project_name})
+            bucket_name = bucket_set['bucket_name']
+            quota = bucket_set['quota']
+            # check bucket_name exists or not
+            if client.bucket_exists(bucket_name):
+                logger.error('%s already exists, please change bucket_name',
+                             bucket_name)
+                return False
+            client.make_bucket(bucket_name)
+            logger.info('%s is created successfully', bucket_name)
+            # change quota limit
+            if change_quota(bucket_name, quota, alias) is not True:
+                return False
+            # set tag
+            if set_bucket_tags(bucket_set, client):
+                logger.info("%s's tags are set successfully", bucket_name)
+            else:
+                logger.error("%s's tags are set unsuccessfully", bucket_name)
+                return False
+    # add policy and set policy to user
+    if 'policy' in apply_set.keys():
+        all_policies = apply_set['policy']
+        for policy in all_policies:
+            policy_set = policy
+            # get bucket_name
+            bucket_name = policy_set['bucket_name']
+            # get policy_type
+            policy_type = policy_set['permission']
+            # generate policy name ex: 'bucket8_RO_policy'
+            policy_name = bucket_name + '_' + policy_type + '_' + 'policy'
+            policy_set.update({'project_name': project_name})
+            policy_set.update({'policy_name': policy_name})
+            if add_policy(policy_set, alias) is not True:
+                return False
+            if set_policy2user(policy_set, alias) is not True:
+                return False
     return True
 
 

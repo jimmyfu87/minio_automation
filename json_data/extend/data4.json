@@ -2,12 +2,15 @@
 {
     "type" : "extend",
     "project_name":"project1",
+    "env": "Staging",
     "bucket":[
         {
             "bucket_name": "bucket6",
             "quota": "20",
             "privacy_ind": "Y",
-            "purpose": "project_used"
+            "purpose": "project_used",
+            "save_type": "HARD",
+            "management_unit":"A3"
         }
     ],
     "policy": [

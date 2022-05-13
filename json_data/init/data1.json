@@ -2,18 +2,23 @@
 {
     "type" : "init",
     "project_name":"project1",
+    "env": "Staging",
     "bucket":[
         {
             "bucket_name": "bucket1",
             "quota": "20",
             "privacy_ind": "Y",
-            "purpose": "model_used"
+            "purpose": "model_used",
+            "save_type": "HARD",
+            "management_unit":"A1"
         },
         {
             "bucket_name": "bucket2",
             "quota": "30",
             "privacy_ind": "N",
-            "purpose": "project_used"
+            "purpose": "project_used",
+            "save_type": "HARD",
+            "management_unit":"A1"
         }
     ],
     "policy": [

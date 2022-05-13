@@ -1,16 +1,20 @@
 # update_buckets_use.py
 
 from bmc import ls
-from util import minio_client as client
+from minio import Minio
+import argparse
+import json
+from minio_client import minio_client
 from bmc._utils import Command
 from util import use_ratio_threshold_dic, \
-                use_ratio_healthy_status_name, alias, get_logger
+                use_ratio_healthy_status_name, get_logger,\
+                env_file_dir
 
 
 logger = get_logger('update_buckets_use')
 
 
-def get_all_bucket_name():
+def get_all_bucket_name(alias: str):
     # get name of all buckets
     bucket_content = ls(target=alias).content
     all_bucket_name = []
@@ -19,7 +23,7 @@ def get_all_bucket_name():
     return all_bucket_name
 
 
-def get_all_bucket_usage_dic():
+def get_all_bucket_usage_dic(client: Minio, alias: str):
     bucket_usage_dic = {}
     buckets = client.list_buckets()
     for bucket in buckets:
@@ -76,8 +80,8 @@ def get_quota(**kwargs):
         logger.error('Error occurs when get_quota')
 
 
-def update_usage_quota():
-    bucket_usage_dic = get_all_bucket_usage_dic()
+def update_usage_quota(client: Minio, alias: str):
+    bucket_usage_dic = get_all_bucket_usage_dic(client, alias)
     for bucket_name, bucket_usage in bucket_usage_dic.items():
         bucket_tags = client.get_bucket_tags(bucket_name)
         bucket_tags['usage'] = str(bucket_usage)
@@ -88,7 +92,7 @@ def update_usage_quota():
     return True
 
 
-def update_use_ratio_status():
+def update_use_ratio_status(client: Minio):
     buckets = client.list_buckets()
     for bucket in buckets:
         # get all original bucket tags
@@ -108,10 +112,15 @@ def update_use_ratio_status():
     return True
 
 
-def update_buckets_use():
-    if update_usage_quota():
+def update_buckets_use(env_name: str):
+    env_filename = env_file_dir + '/' + env_name + '.json'
+    with open(env_filename) as env_json:
+        env_data = json.load(env_json)
+    alias = env_data['alias']
+    client = minio_client(env_data).get_client()
+    if update_usage_quota(client, alias):
         logger.info('Update usage and quota of buckets successfully')
-        if update_use_ratio_status():
+        if update_use_ratio_status(client):
             logger.info('Update use_ratio and status of '
                         'buckets successfully')
             return True
@@ -125,7 +134,10 @@ def update_buckets_use():
 
 
 if __name__ == "__main__":
-    if update_buckets_use():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--env", "-e", type=str, required=True)
+    args = parser.parse_args()
+    if update_buckets_use(args.env):
         logger.info('Update buckets use successfully')
     else:
         logger.error('Update buckets use unsuccessfully')

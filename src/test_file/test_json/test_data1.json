@@ -3,12 +3,15 @@
 {   
     "type": "init",
     "project_name": "project1",
+    "env": "Staging",
     "bucket":[
         {
             "bucket_name": "testbucket1",
             "quota": "1",
             "privacy_ind": "Y",
-            "purpose": "model_used"
+            "purpose": "model_used",
+            "save_type": "HARD",
+            "management_unit":"A1"
         }
     ],
     "policy":[

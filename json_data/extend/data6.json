@@ -2,10 +2,12 @@
 {
     "type" : "extend",
     "project_name":"project3",
+    "env": "Staging",
     "policy": [
         {
             "bucket_name": "bucket1",
-            "permission": "RW"
+            "permission": "RW",
+            "env": "Staging"
         }
     ]
 }

@@ -1,15 +1,20 @@
 # buckets_summary.py
 
-from util import minio_client as client
-from util import get_logger, all_tags
+from util import get_logger, all_tags, env_file_dir
 import pandas as pd
 from dateutil import tz
 import argparse
+import json
+from minio_client import minio_client
 
 logger = get_logger('buckets_summary')
 
 
-def get_all_buckets_df():
+def get_all_buckets_df(env_name):
+    env_filename = env_file_dir + '/' + env_name + '.json'
+    with open(env_filename) as env_json:
+        env_data = json.load(env_json)
+    client = minio_client(env_data).get_client()
     buckets = client.list_buckets()
     if len(buckets) == 0:
         logger.debug('There is no any buckets')
@@ -34,8 +39,8 @@ def get_all_buckets_df():
         data.append(new_bucket)
     df = pd.DataFrame(data)
     df = df[['bucket_name', 'create_time', 'objects_num', 'privacy_ind',
-             'project_name', 'purpose', 'usage', 
-             'quota', 'use_ratio', 'status']]
+             'project_name', 'purpose', 'save_type', 'management_unit',
+             'usage', 'quota', 'use_ratio', 'status']]
     # change numeric type column
     int_col = ['quota']
     float_col = ['usage', 'use_ratio']
@@ -50,8 +55,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--filename", "-f", type=str,
                         required=False, default='buckets_summary')
+    parser.add_argument("--env", "-e", type=str, required=True)
     args = parser.parse_args()
-    df = get_all_buckets_df()
+    df = get_all_buckets_df(args.env)
     filename = args.filename + '.csv'
     try:
         df.to_csv(filename)

@@ -15,18 +15,23 @@
     {
         "type" : "init",
         "project_name":"project1",
+        "env": "Staging",
         "bucket":[
             {
                 "bucket_name": "bucket1",
                 "quota": "20",
                 "privacy_ind": "Y",
-                "purpose": "model_used"
+                "purpose": "model_used",
+                "save_type": "HARD",
+                "management_unit":"A1"
             },
             {
                 "bucket_name": "bucket2",
                 "quota": "30",
                 "privacy_ind": "N",
-                "purpose": "project_used"
+                "purpose": "project_used",
+                "save_type": "HARD",
+                "management_unit":"A1"
             }
         ],
         "policy": [
@@ -46,52 +51,57 @@
 ### 用途： 
 輸出所有buckets的object數量、所有tag的資料的dataframe的csv檔，並儲存至特定路徑  
 ### 使用方式： 
-    python buckets_summary.py -f {file} 
+    python buckets_summary.py -f {file} -e {env}
 
 ### 附註：
 -f: 輸出檔案的名稱{file}  
+-e: 使用環境(env) 
 
 
 ## projects_summary.py
 ### 用途： 
 輸出所有project所使用的buckets數量、objects數量、quota的總額的dataframe的csv檔，並儲存至特定路徑
 ### 使用方式： 
-    python projects_summary.py -f {file} 
+    python projects_summary.py -f {file} -e {env}
 
 ### 附註：
--f: 輸出檔案的名稱{file}  
+-f: 輸出檔案的名稱{file}   
+-e: 使用環境(env) 
 
 
 ## update_buckets_use.py
 ### 用途： 
 將所有buckets的usage, quota, use_ratio, status的tag按照使用的狀況進行更新
 ### 使用方式： 
-    python update_buckets_use.py 
+    python update_buckets_use.py -e {env}
+
+### 附註：
+-e: 使用環境(env)
 
 
 ## add_host.py
 ### 用途： 
 建立使用mc指令的alias，建立一次即可，create_buckets時，設定quota和policy時會使用到
 ### 使用方式： 
-    python add_host.py 
+    python add_host.py -e {env}
+
+### 附註：
+-e: 使用環境(env)
 
 
 ## util.py
 ### 用途： 
 儲存多個可客製化的參數，讓其餘程式可以重複利用，包含以下幾個部分 
 
-##### (1) 登入minio需要的值
-###### endpoint, access_key, secret_key, secure, alias
-
-##### (2) 設定buckets會有的tag種類
+##### (1) 設定buckets會有的tag種類
 ###### 1.required_tags(使用者必須給定的tag): ['project_name', 'privacy_ind', 'purpose', 'quota']
 ###### 2.default_tags(系統直接預設的Tag): {'usage' : '0', 'use_ratio' : '0', 'status' : 'Healthy'}
 
-##### (3) 當bucket的use_ratio大於value則給予key當作該buckets的status，若皆小於則視為healthy
+##### (2) 當bucket的use_ratio大於value則給予key當作該buckets的status，若皆小於則視為healthy
 ###### 1. use_ratio_threshold_dic(bucket的status分類閥值的字典): {'Danger': 0.8, 'Cautious': 0.4,  'Aware': 0.1}
 ###### 2. use_ratio_healthy_status_name(healthy狀態的名字): 'Healthy'
 
-##### (4) policy
+##### (3) policy
 ###### 1. policy的模板: read_only_policy(唯讀的policy, read_write_policy(讀寫的policy)
 ###### 2. 暫時存放policy產生json檔的路徑: 
 
@@ -104,5 +114,8 @@
 ##### (3) 輸出buckets_summary.csv檔，刪除create_date的欄位之後，並測試比對是否跟預期的csv檔(test_folder/buckets_summary.csv)相同
 ### 使用方式： 
     cd src
-    python test.py
+    python test.py -e {env}
+
+### 附註：
+-e: 使用環境(env)
 
