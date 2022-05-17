@@ -2,8 +2,8 @@
 
 {
     "alias" : "UAT", 
-    "endpoint": "127.0.0.1:9000",
-    "access_key": "minio",
+    "endpoint": "127.0.0.1:9001",
+    "access_key": "mino",
     "secret_key": "minio123",
     "secure": "N"
 }
