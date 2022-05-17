@@ -1,6 +1,5 @@
 # create_apply.py
 
-from sys import prefix
 from lifecycle import lifecycle
 from util import required_tags, default_tags, policy_temp_set, \
                  policy_directory, get_logger, HOME_PATH, password_len,\
@@ -164,7 +163,8 @@ def change_quota(bucket_name: str, save_type: str, quota: str, alias: str):
 
 
 def change_quota_cmd(**kwargs):
-    cmd = Command('mc {flags} admin bucket quota {target} --{save_type} {quota}')
+    cmd = Command('mc {flags} admin bucket '
+                  'quota {target} --{save_type} {quota}')
     response = cmd(**kwargs)
     if response.content['status'] == 'success':
         return True
@@ -237,12 +237,12 @@ def create_apply(apply_set: dict):
             logger.info('%s is created successfully', bucket_name)
             # set ttl
             if ttl != 'None':
-                lifecycle_config = lifecycle(prefix='tmp', 
-                                            expire_day=int(ttl)).get_config()
+                lifecycle_config = lifecycle(prefix='tmp',
+                                             expire_day=int(ttl)).get_config()
                 client.set_bucket_lifecycle(bucket_name, lifecycle_config)
                 logger.info("%s's ttl is set successfully", bucket_name)
             # change quota limit
-            if change_quota(bucket_name, save_type, quota,  alias) is not True:
+            if change_quota(bucket_name, save_type, quota, alias) is not True:
                 return False
             # set tag
             if set_bucket_tags(bucket_set, client):

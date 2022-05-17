@@ -74,7 +74,6 @@ def get_quota(**kwargs):
     if response.content['status'] == 'success':
         # get quota and transfer to gib
         quota = int(response.content['quota'] / 1024**3)
-        logger.info('get_quota successfully')
         return quota
     else:
         logger.error('Error occurs when get_quota')
@@ -102,7 +101,7 @@ def update_use_ratio_status(client: Minio):
         # get original quota
         bucket_quota = int(bucket_tags['quota'])
         # calculate bucket use_ratio
-        bucket_use_ratio = bucket_usage / bucket_quota
+        bucket_use_ratio = round((bucket_usage / bucket_quota)*100, 1)
         # assign status to bucket
         bucket_status = divide_use_ratio_gp(bucket_use_ratio)
         # set use_ratio and status tags to bucket

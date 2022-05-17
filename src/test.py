@@ -76,8 +76,9 @@ def test_create_apply(test_apply_sets, client, alias):
                 assert client.bucket_exists(bucket_name) is True
                 # test ttl
                 if test_ttl != 'None':
-                    ttl =client.get_bucket_lifecycle(bucket_name).rules[0].expiration.days
-                    assert int(test_ttl)==ttl
+                    ttl = client.get_bucket_lifecycle(bucket_name).\
+                          rules[0].expiration.days
+                    assert int(test_ttl) == ttl
                 # test quota limit
                 bucket_quota_limit = int(get_quota(target=alias,
                                                    bucket_name=bucket_name))
@@ -114,7 +115,7 @@ def test_update_buckets_use(test_buckets, update_usage,
         bucket_name = test_buckets[i]['bucket_name']
         tags = client.get_bucket_tags(bucket_name)
         assert tags['usage'] == str(update_usage[i])
-        assert tags['use_ratio'] == str(update_use_ratio[i])
+        assert tags['use_ratio'] == str(round(update_use_ratio[i]*100, 1))
         assert tags['status'] == str(update_status[i])
     logger.info('Finish test_update_buckets_use successfully')
 

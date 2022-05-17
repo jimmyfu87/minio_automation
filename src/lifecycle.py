@@ -3,11 +3,12 @@
 from minio.lifecycleconfig import Expiration, LifecycleConfig, Rule
 from minio.commonconfig import ENABLED, Filter
 
+
 class lifecycle:
     def __init__(self, prefix: str, expire_day: int):
         self.prefix = prefix
         self.expire_day = expire_day
-    
+
     def get_config(self):
         lifecycle = LifecycleConfig(
                     [
@@ -20,6 +21,3 @@ class lifecycle:
                     ],
                     )
         return lifecycle
-
-
-
