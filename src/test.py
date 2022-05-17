@@ -71,13 +71,18 @@ def test_create_apply(test_apply_sets, client, alias):
             all_buckets = apply_set['bucket']
             for bucket in all_buckets:
                 bucket_name = bucket['bucket_name']
+                test_ttl = bucket['ttl']
                 # test bucket is created or not
                 assert client.bucket_exists(bucket_name) is True
+                # test ttl
+                if test_ttl != 'None':
+                    ttl =client.get_bucket_lifecycle(bucket_name).rules[0].expiration.days
+                    assert int(test_ttl)==ttl
                 # test quota limit
                 bucket_quota_limit = int(get_quota(target=alias,
                                                    bucket_name=bucket_name))
                 test_bucket_quota_limit = int(bucket['quota'])
-                assert bucket_quota_limit == test_bucket_quota_limit
+                assert test_bucket_quota_limit == bucket_quota_limit
         if 'policy' in apply_set.keys():
             all_policies = apply_set['policy']
             for policy in all_policies:

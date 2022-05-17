@@ -9,15 +9,15 @@
             "quota": "20",
             "privacy_ind": "Y",
             "purpose": "project_used",
-            "save_type": "HARD",
-            "management_unit":"A1"
+            "save_type": "hard",
+            "management_unit":"A1",
+            "ttl": "100"
         }
     ],
     "policy": [
         {
             "bucket_name": "bucket5",
-            "permission": "RO",
-            "env": "Staging"
+            "permission": "RO"
         }
     ]
 }

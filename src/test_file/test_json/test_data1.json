@@ -10,8 +10,9 @@
             "quota": "1",
             "privacy_ind": "Y",
             "purpose": "model_used",
-            "save_type": "HARD",
-            "management_unit":"A1"
+            "save_type": "hard",
+            "management_unit":"A1",
+            "ttl": "None"
         }
     ],
     "policy":[

@@ -6,8 +6,7 @@
     "policy": [
         {
             "bucket_name": "bucket1",
-            "permission": "RO",
-            "env": "Staging"
+            "permission": "RO"
         }
     ]
 }

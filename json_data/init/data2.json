@@ -9,16 +9,18 @@
             "quota": "5",
             "privacy_ind": "Y",
             "purpose": "model_used",
-            "save_type": "HARD",
-            "management_unit":"A2"
+            "save_type": "hard",
+            "management_unit":"A2",
+            "ttl": "300"
         },
         {
             "bucket_name": "bucket4",
             "quota": "10",
             "privacy_ind": "N",
             "purpose": "model_used",
-            "save_type": "HARD",
-            "management_unit":"A1"
+            "save_type": "hard",
+            "management_unit":"A1",
+            "ttl": "221"
         }
     ],
     "policy": [

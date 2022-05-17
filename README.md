@@ -22,16 +22,18 @@
                 "quota": "20",
                 "privacy_ind": "Y",
                 "purpose": "model_used",
-                "save_type": "HARD",
-                "management_unit":"A1"
+                "save_type": "hard",
+                "management_unit":"A1",
+                "ttl": "30"
             },
             {
                 "bucket_name": "bucket2",
                 "quota": "30",
                 "privacy_ind": "N",
                 "purpose": "project_used",
-                "save_type": "HARD",
-                "management_unit":"A1"
+                "save_type": "hard",
+                "management_unit":"A1",
+                "ttl": "25"
             }
         ],
         "policy": [
@@ -44,7 +46,7 @@
                 "permission": "RW"
             }
         ]
-    }  
+    } 
 
 
 ## buckets_summary.py
@@ -94,16 +96,56 @@
 儲存多個可客製化的參數，讓其餘程式可以重複利用，包含以下幾個部分 
 
 ##### (1) 設定buckets會有的tag種類
-###### 1.required_tags(使用者必須給定的tag): ['project_name', 'privacy_ind', 'purpose', 'quota']
-###### 2.default_tags(系統直接預設的Tag): {'usage' : '0', 'use_ratio' : '0', 'status' : 'Healthy'}
+###### 1.required_tags(使用者必須給定的tag): 
+    ['project_name', 'privacy_ind', 'purpose', 'quota', 'save_type', 'management_unit']
+###### 2.default_tags(系統直接預設的Tag): 
+    {'usage' : '0', 'use_ratio' : '0', 'status' : 'Healthy'}
 
 ##### (2) 當bucket的use_ratio大於value則給予key當作該buckets的status，若皆小於則視為healthy
-###### 1. use_ratio_threshold_dic(bucket的status分類閥值的字典): {'Danger': 0.8, 'Cautious': 0.4,  'Aware': 0.1}
-###### 2. use_ratio_healthy_status_name(healthy狀態的名字): 'Healthy'
+###### 1. use_ratio_threshold_dic(bucket的status分類閥值的字典): 
+    {'Danger': 0.8, 'Cautious': 0.4,  'Aware': 0.1}
+###### 2. use_ratio_healthy_status_name(healthy狀態的名字): 
+    'Healthy'
 
 ##### (3) policy
 ###### 1. policy的模板: read_only_policy(唯讀的policy, read_write_policy(讀寫的policy)
-###### 2. 暫時存放policy產生json檔的路徑: 
+#### Read Only policy template
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "s3:GetObject",
+                    "s3:ListBucket",
+                    "s3:GetBucketLocation"
+                ],
+                "Resource": [
+                    "arn:aws:s3:::{{bucket_name}}/*"
+                ]
+            }
+        ]
+    }
+#### Read Write policy template
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "s3:PutObject",
+                    "s3:GetObject",
+                    "s3:ListBucket",
+                    "s3:GetBucketLocation",
+                    "s3:DeleteObject"
+                ],
+                "Resource": [
+                    "arn:aws:s3:::{{bucket_name}}/*"
+                ]
+            }
+        ]
+    }
+###### 2. 暫時存放policy產生json檔的路徑
 
 ## test.py
 ### 用途： 
