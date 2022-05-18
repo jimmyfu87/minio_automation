@@ -23,35 +23,26 @@ def get_all_bucket_name(alias: str):
     return all_bucket_name
 
 
+def get_bucket_usage_cmd(**kwargs):
+    cmd = Command('mc {flags} du {target}/{bucket_name}')
+    response = cmd(**kwargs)
+    if response.content['status'] == 'success':
+        bucket_usage = response.content['size']/(1024**3)
+    else:
+        logger.error('Error occurs when get usage of bucket')
+    return bucket_usage
+
+
 def get_all_bucket_usage_dic(client: Minio, alias: str):
     bucket_usage_dic = {}
     buckets = client.list_buckets()
     for bucket in buckets:
-        # get buck path name
-        path = alias + '/' + bucket.name
         # sum all object size
-        bucket_usage = get_bucket_usage(path)
-        bucket_usage_gib = bucket_usage / (1024**3)
+        bucket_usage_gib = get_bucket_usage_cmd(target=alias,
+                                                bucket_name=bucket.name)
         # set bucket usage dic
         bucket_usage_dic.update({bucket.name: bucket_usage_gib})
     return bucket_usage_dic
-
-
-def get_bucket_usage(path: str):
-    object_content = ls(target=path).content
-    bucket_usage = 0
-    # if there is only one element in response
-    if type(object_content) == dict:
-        object_content = [object_content]
-    # sum the file size
-    for object_item in object_content:
-        if object_item['type'] == 'file':
-            bucket_usage = bucket_usage + object_item['size']
-        # Get folder file recursively
-        elif object_item['type'] == 'folder':
-            folder_path = path + '/' + object_item['key'][:-1]
-            bucket_usage = bucket_usage + get_bucket_usage(folder_path)
-    return bucket_usage
 
 
 def divide_use_ratio_gp(use_ratio: float):
