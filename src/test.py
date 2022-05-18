@@ -111,10 +111,12 @@ def test_create_apply(test_apply_sets, client, alias):
 def test_update_buckets_use(test_buckets, update_usage,
                             update_use_ratio, update_status,
                             client):
+    # test usage, use_ratio and status
     for i in range(len(test_buckets)):
         bucket_name = test_buckets[i]['bucket_name']
         tags = client.get_bucket_tags(bucket_name)
         assert tags['usage'] == str(update_usage[i])
+        # change use_ratio to percentage and round to 1 decimal
         assert tags['use_ratio'] == str(round(update_use_ratio[i]*100, 1))
         assert tags['status'] == str(update_status[i])
     logger.info('Finish test_update_buckets_use successfully')

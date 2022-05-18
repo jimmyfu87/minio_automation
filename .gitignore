@@ -6,8 +6,6 @@ policy_json/*
 .pytest_cache/*
 src/test/__pycache__/*
 src/.coverage
-src/test/*
-test/*
 old_test/*
 old_json_data/*
 src/remove_all_buckets.py

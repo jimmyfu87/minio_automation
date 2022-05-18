@@ -10,6 +10,7 @@ logger = get_logger('add_host')
 
 def add_host(env_name):
     env_filename = env_file_dir + '/' + env_name + '.json'
+    # open environment json file and add host
     with open(env_filename) as env_json:
         env_data = json.load(env_json)
         alias = env_data['alias']
