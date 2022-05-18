@@ -99,18 +99,20 @@ def set_policy2user(policy_set: dict, alias: str):
     policy_name = policy_set['policy_name']
     user_response = admin_user_info(target=alias,
                                     username=project_name).content
-    all_policy = [policy_name]
+    all_policy = {policy_name}
     if user_response['status'] == 'success':
         # get original policy and add to all policy
         if 'policyName' in user_response.keys():
             logger.info("%s has original policy",
                         project_name)
-            original_policy = user_response['policyName']
-            all_policy.append(original_policy)
+            # policy_name string to list
+            original_policy =user_response['policyName'].split(",")
+            all_policy.update(original_policy)
         else:
             logger.info("%s has no original policy",
                         project_name)
     # set policy to user
+    all_policy = list(all_policy)
     policy2user_response = set_policy2user_cmd(target=alias,
                                                policy=all_policy,
                                                user=project_name).content

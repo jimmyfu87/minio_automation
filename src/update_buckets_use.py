@@ -19,6 +19,7 @@ def get_all_bucket_name(alias: str):
     bucket_content = ls(target=alias).content
     all_bucket_name = []
     for i in bucket_content:
+        # remove last character: '/'
         all_bucket_name.append(i['key'][:-1])
     return all_bucket_name
 

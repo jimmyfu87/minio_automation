@@ -45,7 +45,7 @@ default_tags = {'usage': '0', 'use_ratio': '0', 'status': 'Healthy'}
 all_tags = required_tags + list(default_tags.keys())
 
 # Use ratio threshold
-use_ratio_threshold_dic = {'Danger': 0.8, 'Cautious': 0.4,  'Aware': 0.1}
+use_ratio_threshold_dic = {'Danger': 80, 'Cautious': 40,  'Aware': 10}
 use_ratio_healthy_status_name = 'Healthy'
 
 # the length of password
