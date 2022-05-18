@@ -106,7 +106,7 @@ def set_policy2user(policy_set: dict, alias: str):
             logger.info("%s has original policy",
                         project_name)
             # policy_name string to list
-            original_policy =user_response['policyName'].split(",")
+            original_policy = user_response['policyName'].split(",")
             all_policy.update(original_policy)
         else:
             logger.info("%s has no original policy",
