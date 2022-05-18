@@ -95,20 +95,21 @@
 ### 用途： 
 儲存多個可客製化的參數，讓其餘程式可以重複利用，包含以下幾個部分 
 
-##### (1) 設定buckets會有的tag種類
+(1) 設定buckets會有的tag種類
 ###### 1.required_tags(使用者必須給定的tag): 
     ['project_name', 'privacy_ind', 'purpose', 'quota', 'save_type', 'management_unit']
 ###### 2.default_tags(系統直接預設的Tag): 
     {'usage' : '0', 'use_ratio' : '0', 'status' : 'Healthy'}
 
-##### (2) 當bucket的use_ratio大於value則給予key當作該buckets的status，若皆小於則視為healthy
+(2) 當bucket的use_ratio大於value則給予key當作該buckets的status，若皆小於則視為healthy
 ###### 1. use_ratio_threshold_dic(bucket的status分類閥值的字典): 
-    {'Danger': 0.8, 'Cautious': 0.4,  'Aware': 0.1}
+    {'Danger': 80, 'Cautious': 40,  'Aware': 10}
 ###### 2. use_ratio_healthy_status_name(healthy狀態的名字): 
     'Healthy'
 
-##### (3) policy
-###### 1. policy的模板: read_only_policy(唯讀的policy, read_write_policy(讀寫的policy)
+(3) policy
+1. policy的模板: read_only_policy(唯讀的policy, read_write_policy(讀寫的policy)
+2. 暫時存放policy產生json檔的路徑
 #### Read Only policy template
     {
         "Version": "2012-10-17",
@@ -145,15 +146,19 @@
             }
         ]
     }
-###### 2. 暫時存放policy產生json檔的路徑
+
 
 ## test.py
 ### 用途： 
-測試function的整合測試 
-##### (1) 利用test_file/test_json建立兩個bucket，並進行測試bucket是否建立成功、quota_limit是否設定正確、user是否設定正確、policy是否設定並綁定user、tag是否設定正確
-##### (2) 放進1、10張圖片進入兩個bucket並進行update_bucket_use，並進行測試usage、use_ratio、status是否符合
-##### (3) 輸出projects_summary.csv檔，並測試比對是否跟預期的csv檔(test_folder/projects_summary.csv)相同
-##### (3) 輸出buckets_summary.csv檔，刪除create_date的欄位之後，並測試比對是否跟預期的csv檔(test_folder/buckets_summary.csv)相同
+測試function的整合測試  
+
+ (1) 利用test_file/test_json建立兩個bucket，並進行測試bucket是否建立成功、quota_limit是否設定正確、user是否設定正確、policy是否設定並綁定user、tag是否設定正確
+ 
+ (2) 放進1、10張圖片進入兩個bucket並進行update_bucket_use，並進行測試usage、use_ratio、status是否符合
+ 
+ (3) 輸出projects_summary.csv檔，並測試比對是否跟預期的csv檔(test_folder/projects_summary.csv)相同
+ 
+ (4) 輸出buckets_summary.csv檔，刪除create_date的欄位之後，並測試比對是否跟預期的csv檔(test_folder/buckets_summary.csv)相同
 ### 使用方式： 
     cd src
     python test.py -e {env}
