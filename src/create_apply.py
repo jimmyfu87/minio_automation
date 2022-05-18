@@ -148,7 +148,11 @@ def set_bucket_tags(bucket_set: dict, client: Minio):
     for key in default_tags.keys():
         tag_to_set[key] = default_tags[key]
     # set tags
-    client.set_bucket_tags(bucket_name, tag_to_set)
+    try:
+        client.set_bucket_tags(bucket_name, tag_to_set)
+    except Exception:
+        logger.error('Error occurs when setting tags',
+                     exc_info=True)
     return True
 
 
@@ -171,6 +175,11 @@ def change_quota_cmd(**kwargs):
     if response.content['status'] == 'success':
         return True
     else:
+        logger.error("Error occurs when changing quota")
+        err_message = response['error']['message']
+        err_cause = response['error']['cause']['message']
+        logger.error('Error Message: ' + err_message)
+        logger.error('Error Cause: ' + err_cause)
         return False
 
 
@@ -235,8 +244,11 @@ def create_apply(apply_set: dict):
                 logger.error('%s already exists, please change bucket_name',
                              bucket_name)
                 return False
-            client.make_bucket(bucket_name)
-            logger.info('%s is created successfully', bucket_name)
+            try:
+                client.make_bucket(bucket_name)
+            except Exception:
+                logger.error('%s is created successfully',
+                             bucket_name, exc_info=True)
             # set ttl
             if ttl != 'None':
                 lifecycle_config = lifecycle(prefix='tmp',

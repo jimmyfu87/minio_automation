@@ -36,4 +36,4 @@ if __name__ == "__main__":
         project_df.to_csv(filename)
         logger.info('The file is saved successfully')
     except Exception:
-        logger.error('The file is saved unsuccessfully')
+        logger.error('The file is saved unsuccessfully', exc_info=True)

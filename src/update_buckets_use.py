@@ -31,6 +31,10 @@ def get_bucket_usage_cmd(**kwargs):
         bucket_usage = response.content['size']/(1024**3)
     else:
         logger.error('Error occurs when get usage of bucket')
+        err_message = response['error']['message']
+        err_cause = response['error']['cause']['message']
+        logger.error('Error Message: ' + err_message)
+        logger.error('Error Cause: ' + err_cause)
     return bucket_usage
 
 
@@ -69,6 +73,10 @@ def get_quota(**kwargs):
         return quota
     else:
         logger.error('Error occurs when get_quota')
+        err_message = response['error']['message']
+        err_cause = response['error']['cause']['message']
+        logger.error('Error Message: ' + err_message)
+        logger.error('Error Cause: ' + err_cause)
 
 
 def update_usage_quota(client: Minio, alias: str):
