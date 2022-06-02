@@ -9,3 +9,4 @@ src/.coverage
 old_test/*
 old_json_data/*
 src/remove_all_buckets.py
+export_data/*
