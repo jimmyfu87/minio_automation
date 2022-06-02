@@ -36,7 +36,7 @@ env_file_dir = join(HOME_PATH, 'src/env')
 # Tag
 # 使用者會給的Tag
 required_tags = ['project_name', 'privacy_ind', 'purpose',
-                 'quota', 'save_type', 'management_unit']
+                 'quota', 'management_unit']
 
 # 系統直接預設的Tag
 default_tags = {'usage': '0', 'use_ratio': '0', 'status': 'Healthy'}

@@ -156,11 +156,11 @@ def set_bucket_tags(bucket_set: dict, client: Minio):
     return True
 
 
-def change_quota(bucket_name: str, save_type: str, quota: str, alias: str):
+def change_quota(bucket_name: str, quota: str, alias: str):
     # change quota limit
     bucket_path = alias + '/' + bucket_name
     quota = int(quota) * (1024**3)
-    if change_quota_cmd(target=bucket_path, quota=quota, save_type=save_type):
+    if change_quota_cmd(target=bucket_path, quota=quota):
         logger.info("%s's quota is set successfully", bucket_name)
         return True
     else:
@@ -170,7 +170,7 @@ def change_quota(bucket_name: str, save_type: str, quota: str, alias: str):
 
 def change_quota_cmd(**kwargs):
     cmd = Command('mc {flags} admin bucket '
-                  'quota {target} --{save_type} {quota}')
+                  'quota {target} --hard {quota}')
     response = cmd(**kwargs)
     if response.content['status'] == 'success':
         return True
@@ -237,7 +237,6 @@ def create_apply(apply_set: dict):
             bucket_set.update({'project_name': project_name})
             bucket_name = bucket_set['bucket_name']
             quota = bucket_set['quota']
-            save_type = bucket['save_type']
             ttl = bucket_set['ttl']
             # check bucket_name exists or not
             if client.bucket_exists(bucket_name):
@@ -256,7 +255,7 @@ def create_apply(apply_set: dict):
                 client.set_bucket_lifecycle(bucket_name, lifecycle_config)
                 logger.info("%s's ttl is set successfully", bucket_name)
             # change quota limit
-            if change_quota(bucket_name, save_type, quota, alias) is not True:
+            if change_quota(bucket_name, quota, alias) is not True:
                 return False
             # set tag
             if set_bucket_tags(bucket_set, client):

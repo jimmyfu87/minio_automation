@@ -1,11 +1,11 @@
-,bucket_name,create_time,objects_num,privacy_ind,project_name,purpose,save_type,management_unit,usage,quota,use_ratio,status
-0,bucket1,2022-04-21 13:48:58.136000+08:00,8,Y,project1,project_used,hard,A1,6.051065445,22,0.275048429,Aware
-1,bucket10,2022-04-21 13:49:02.956000+08:00,11,Y,project2,model_used,hard,A2,6.889523506,10,0.688952351,Cautious
-2,bucket2,2022-04-21 13:49:00.678000+08:00,10,Y,project1,model_used,hard,A2,5.8057127,15,0.387047513,Aware
-3,bucket3,2022-04-21 13:48:59.519000+08:00,14,N,project2,project_used,fifo,B1,7.992455482,105,0.076118624,Healthy
-4,bucket4,2022-04-21 13:49:06.527000+08:00,9,Y,project2,model_used,hard,C1,8.247535706,11,0.749775973,Cautious
-5,bucket5,2022-04-21 13:49:01.723000+08:00,0,N,project2,project_used,hard,C1,0,18,0,Healthy
-6,bucket6,2022-04-21 13:48:56.167000+08:00,6,Y,project2,project_used,fifo,C2,4.286446571,15,0.285763105,Aware
-7,bucket7,2022-04-21 13:48:53.506000+08:00,8,N,project3,model_used,hard,B1,4.703849792,15,0.313589986,Aware
-8,bucket8,2022-04-21 13:49:05.438000+08:00,5,Y,project3,project_used,hard,A1,2.646109581,5,0.529221916,Cautious
-9,bucket9,2022-04-21 13:49:04.102000+08:00,8,Y,project2,project_used,hard,A1,5.219871521,200,0.026099358,Healthy
+,bucket_name,create_time,objects_num,privacy_ind,project_name,purpose,management_unit,usage,quota,use_ratio,status
+0,bucket1,2022-04-21 13:48:58.136000+08:00,8,Y,project1,project_used,A1,6.051065445,22,0.275048429,Aware
+1,bucket10,2022-04-21 13:49:02.956000+08:00,11,Y,project2,model_used,A2,6.889523506,10,0.688952351,Cautious
+2,bucket2,2022-04-21 13:49:00.678000+08:00,10,Y,project1,model_used,A2,5.8057127,15,0.387047513,Aware
+3,bucket3,2022-04-21 13:48:59.519000+08:00,14,N,project2,project_used,B1,7.992455482,105,0.076118624,Healthy
+4,bucket4,2022-04-21 13:49:06.527000+08:00,9,Y,project2,model_used,C1,8.247535706,11,0.749775973,Cautious
+5,bucket5,2022-04-21 13:49:01.723000+08:00,0,N,project2,project_used,C1,0,18,0,Healthy
+6,bucket6,2022-04-21 13:48:56.167000+08:00,6,Y,project2,project_used,C2,4.286446571,15,0.285763105,Aware
+7,bucket7,2022-04-21 13:48:53.506000+08:00,8,N,project3,model_used,B1,4.703849792,15,0.313589986,Aware
+8,bucket8,2022-04-21 13:49:05.438000+08:00,5,Y,project3,project_used,A1,2.646109581,5,0.529221916,Cautious
+9,bucket9,2022-04-21 13:49:04.102000+08:00,8,Y,project2,project_used,A1,5.219871521,200,0.026099358,Healthy

@@ -9,7 +9,6 @@
             "quota": "20",
             "privacy_ind": "Y",
             "purpose": "model_used",
-            "save_type": "hard",
             "management_unit":"A1",
             "ttl": "30"
         },
@@ -18,7 +17,6 @@
             "quota": "30",
             "privacy_ind": "N",
             "purpose": "project_used",
-            "save_type": "hard",
             "management_unit":"A1",
             "ttl": "25"
         }
