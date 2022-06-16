@@ -1,7 +1,9 @@
 # projects_summary.py
 
 import argparse
+
 import pandas as pd
+
 from buckets_summary import get_all_buckets_df
 from util import get_logger
 

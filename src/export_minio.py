@@ -1,13 +1,14 @@
 # export_minio.py
 
-from util import get_logger, env_file_dir
 import argparse
 import json
-from minio_client import minio_client
-from bmc import admin_policy_info, admin_policy_list,\
-                admin_user_list
 from os.path import join
+
+from bmc import admin_policy_info, admin_policy_list, admin_user_list
+
+from minio_client import minio_client
 from update_buckets_use import get_quota
+from util import env_file_dir, get_logger
 
 logger = get_logger('export_minio')
 export_data_path = '../export_data'

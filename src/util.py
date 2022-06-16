@@ -1,8 +1,9 @@
 # util.py
 
 import logging
-from jinja2 import Template
 from os.path import join
+
+from jinja2 import Template
 
 HOME_PATH = '/Users/jimmyfu87/Github/esun/minio_automation'
 

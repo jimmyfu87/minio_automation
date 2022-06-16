@@ -1,22 +1,22 @@
 # create_apply.py
 
-from lifecycle import lifecycle
-from util import required_tags, default_tags, policy_temp_set, \
-                 policy_directory, get_logger, HOME_PATH, password_len,\
-                 env_file_dir
-from minio.commonconfig import Tags
-from minio_client import minio_client
 import argparse
 import json
 import os
-from bmc._utils import Command
-from bmc import admin_policy_add, admin_user_add,\
-                admin_user_info, admin_user_list,\
-                admin_policy_list
 import random
 import string
-from minio import Minio
 
+from bmc import (admin_policy_add, admin_policy_list, admin_user_add,
+                 admin_user_info, admin_user_list)
+from bmc._utils import Command
+from minio import Minio
+from minio.commonconfig import Tags
+
+from lifecycle import lifecycle
+from minio_client import minio_client
+from util import (HOME_PATH, default_tags, env_file_dir, get_logger,
+                  password_len, policy_directory, policy_temp_set,
+                  required_tags)
 
 logger = get_logger('create_apply')
 
@@ -193,6 +193,7 @@ def add_user(project_name: str, alias: str):
     # generate password
     password = ''.join(random.choice(string.ascii_letters + string.digits)
                        for x in range(password_len))
+    print(password)
     # add user
     add_user_response = admin_user_add(target=alias, username=username,
                                        password=password).content

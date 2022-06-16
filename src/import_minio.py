@@ -1,17 +1,15 @@
 # export_minio.py
 
-from hypothesis import target
-from util import get_logger, env_file_dir
 import argparse
 import json
-from minio_client import minio_client
-from bmc import admin_policy_info, admin_policy_list,\
-                admin_user_add, admin_policy_add
-from os.path import join
-from update_buckets_use import get_quota
-from create_apply import set_bucket_tags, change_quota,\
-                         set_policy2user_cmd
 import os
+from os.path import join
+
+from bmc import (admin_policy_add, admin_user_add)
+
+from create_apply import change_quota, set_bucket_tags, set_policy2user_cmd
+from minio_client import minio_client
+from util import env_file_dir, get_logger
 
 logger = get_logger('import_minio')
 export_data_path = '../export_data'
@@ -59,14 +57,14 @@ def import_users(env_name):
         # set policy to user
         user_policies = user['policy_name']
         policy2user_response = set_policy2user_cmd(target=alias,
-                                                    policy=user_policies,
-                                                    user=username).content
+                                                   policy=user_policies,
+                                                   user=username).content
         if policy2user_response['status'] == 'success':
             logger.info("Set %s to %s successfully",
                         user_policies, username)
         else:
             logger.error("Set %s to %s unsuccessfully",
-                        user_policies, username)
+                         user_policies, username)
             err_message = policy2user_response['error']['message']
             err_cause = policy2user_response['error']['cause']['message']
             logger.error('Error Message: ' + err_message)
@@ -84,10 +82,10 @@ def import_buckets(env_name):
     client = minio_client(env_data).get_client()
     # make buckets and set tags
     with open(bucket_file_path) as bucket_json:
-        buckets= json.load(bucket_json)
+        buckets = json.load(bucket_json)
     for bucket in buckets:
         bucket_name = bucket['bucket_name']
-        save_type =  bucket['save_type']
+        save_type = bucket['save_type']
         quota = bucket['quota']
         client.make_bucket(bucket_name)
         change_quota(bucket_name, save_type, quota, alias)
@@ -114,5 +112,3 @@ if __name__ == "__main__":
             logger.error('policies are imported successfully')
     else:
         logger.error('buckets are imported unsuccessfully')
-
-

@@ -1,9 +1,11 @@
 # add_host.py
 
-from bmc import config_host_add
-import json
 import argparse
-from util import get_logger, env_file_dir
+import json
+
+from bmc import config_host_add
+
+from util import env_file_dir, get_logger
 
 logger = get_logger('add_host')
 

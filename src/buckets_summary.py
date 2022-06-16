@@ -1,11 +1,13 @@
 # buckets_summary.py
 
-from util import get_logger, all_tags, env_file_dir
-import pandas as pd
-from dateutil import tz
 import argparse
 import json
+
+import pandas as pd
+from dateutil import tz
+
 from minio_client import minio_client
+from util import all_tags, env_file_dir, get_logger
 
 logger = get_logger('buckets_summary')
 

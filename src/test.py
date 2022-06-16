@@ -1,17 +1,19 @@
 # test.py
 
-from update_buckets_use import get_quota
-from bmc import admin_user_info, config_host_list
-import subprocess
-from util import HOME_PATH, default_tags, required_tags,\
-                 get_logger, env_file_dir
-from minio_client import minio_client
-from create_apply import check_policy_exist, check_user_exist
-from os.path import join
-import os
-import pandas as pd
-import json
 import argparse
+import json
+import os
+import subprocess
+from os.path import join
+
+import pandas as pd
+from bmc import admin_user_info, config_host_list
+
+from create_apply import check_policy_exist, check_user_exist
+from minio_client import minio_client
+from update_buckets_use import get_quota
+from util import (HOME_PATH, default_tags, env_file_dir, get_logger,
+                  required_tags)
 
 logger = get_logger('test')
 pic_path = 'test_file/test.jpg'

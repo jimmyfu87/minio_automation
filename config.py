@@ -13,4 +13,5 @@
 #  mc event add Staging/images arn:minio:sqs::_:postgresql --suffix .jpg
 
 
-#  notify_postgres format=namespace connection_string="host=docker.for.mac.localhost dbname=db user=root password=example port=5432 sslmode=disable" table=min queue_dir= queue_limit=0 max_open_connections=2 
+#  notify_postgres format=namespace connection_string="host=docker.for.mac.localhost dbname=db user=root password=example port=5432 sslmode=disable" table=min queue_dir= queue_limit=0 max_open_connections=2
+#  mc admin config reset Staging/ notify_kafka 

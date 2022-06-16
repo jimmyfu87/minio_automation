@@ -1,15 +1,15 @@
 # update_buckets_use.py
 
-from bmc import ls
-from minio import Minio
 import argparse
 import json
-from minio_client import minio_client
-from bmc._utils import Command
-from util import use_ratio_threshold_dic, \
-                use_ratio_healthy_status_name, get_logger,\
-                env_file_dir
 
+from bmc import ls
+from bmc._utils import Command
+from minio import Minio
+
+from minio_client import minio_client
+from util import (env_file_dir, get_logger, use_ratio_healthy_status_name,
+                  use_ratio_threshold_dic)
 
 logger = get_logger('update_buckets_use')
 
