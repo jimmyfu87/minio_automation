@@ -27,7 +27,7 @@ def import_policies(env_name):
         resp = admin_policy_add(target=alias,
                                 name=policy_name,
                                 file=policy_file_path).content
-        if resp['status']=='success':
+        if resp['status'] == 'success':
             logger.info("%s is added successfully", policy_name)
         else:
             logger.error("%s is added unsuccessfully", policy_name)
@@ -42,14 +42,14 @@ def import_users(env_name):
     user_file_path = join(export_data_path, 'user_ls') + '.json'
     alias = env_data['alias']
     with open(user_file_path) as user_json:
-        users= json.load(user_json)
+        users = json.load(user_json)
     for user in users:
         username = user['access_key']
         password = user['secret_key']
         # add user
         resp = admin_user_add(target=alias, username=username,
                               password=password).content
-        if resp['status']=='success':
+        if resp['status'] == 'success':
             logger.info("%s is added successfully", username)
         else:
             logger.error("%s is added unsuccessfully", username)
@@ -94,7 +94,8 @@ def import_buckets(env_name):
         else:
             logger.error("%s's tags are set unsuccessfully", bucket_name)
             return False
-    return True    
+    return True
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
