@@ -85,10 +85,9 @@ def import_buckets(env_name):
         buckets = json.load(bucket_json)
     for bucket in buckets:
         bucket_name = bucket['bucket_name']
-        save_type = bucket['save_type']
         quota = bucket['quota']
         client.make_bucket(bucket_name)
-        change_quota(bucket_name, save_type, quota, alias)
+        change_quota(bucket_name, quota, alias)
         if set_bucket_tags(bucket, client):
             logger.info("%s's tags are set successfully", bucket_name)
         else:

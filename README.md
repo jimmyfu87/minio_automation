@@ -29,7 +29,6 @@
                         "quota": "20",
                         "privacy_ind": "Y",
                         "purpose": "model_used",
-                        "save_type": "hard",
                         "management_unit":"A1",
                         "ttl": "30"
                     },
@@ -38,7 +37,6 @@
                         "quota": "30",
                         "privacy_ind": "N",
                         "purpose": "project_used",
-                        "save_type": "hard",
                         "management_unit":"A1",
                         "ttl": "25"
                     }
@@ -105,7 +103,7 @@
 (1) 設定buckets會有的tag種類
 - required_tags(使用者必須給定的tag): 
         
-            ['project_name', 'privacy_ind', 'purpose', 'quota', 'save_type', 'management_unit']
+            ['project_name', 'privacy_ind', 'purpose', 'quota', 'management_unit']
 - default_tags(系統直接預設的Tag): 
             
             {'usage' : '0', 'use_ratio' : '0', 'status' : 'Healthy'}
@@ -163,11 +161,11 @@
 ### 用途： 
 測試function的整合測試  
 
-- 利用test_file/test_json建立兩個bucket，並進行測試
+- 利用`test_file/test_json`建立兩個bucket，並進行測試
   - bucket是否建立成功、quota_limit是否設定正確、user是否設定正確
   - policy是否設定並綁定user、tag是否設定正確
  
-- 放進1、10張圖片進入兩個bucket並進行update_bucket_use，並進行測試usage、use_ratio、status是否符合
+- 放進1、10張圖片進入兩個bucket並進行`update_bucket_use.py`，並進行測試usage、use_ratio、status是否符合
  
 - 輸出`projects_summary.csv`檔，並測試比對是否跟預期的csv檔(`test_folder/projects_summary.csv`)相同
  
@@ -181,44 +179,50 @@
 
 
 ## `export_minio.py`
-### 用途： 
+### 用途：
 - 用於輸出minio的metadata，包括bucket、policy、user三個資料，需先建立以下路徑存放資料 
  
       export_data    
       export_data/policy    
-一共會生成三種資料
-- policy: 包括目前admin底下所有的policy資料的raw policy資料，檔名為該policy的名稱，範例如上面policy的template
-- user_ls.json: 包含所有user的access key, 每個user被assign的policy，secret key無法取得會留空人工填寫，範例如下   
+一共會生成三種資料，LifeCycle沒有導出
+- policy 
+    - 包括目前admin底下所有的policy資料的raw policy資料，檔名為該policy的名稱
+    - 範例如上面policy的template
+- user_ls.json
+    - 包含所有user的access key, 每個user被assign的policy
+    - secret key無法取得會留空人工填寫，範例如下   
     
-      [
-        {
-            "access_key": "project1",
-            "secret_key": "",
-            "policy_name": [
-                "bucket1_RO_policy",
-                "bucket2_RW_policy"
-            ]
-        },
-        {
-            "access_key": "project2",
-            "secret_key": "",
-            "policy_name": [
-                "bucket3_RW_policy",
-                "bucket4_RO_policy"
-            ]
-        }
-      ]
+          [
+            {
+                "access_key": "project1",
+                "secret_key": "",
+                "policy_name": [
+                    "bucket1_RO_policy",
+                    "bucket2_RW_policy"
+                ]
+            },
+            {
+                "access_key": "project2",
+                "secret_key": "",
+                "policy_name": [
+                    "bucket3_RW_policy",
+                    "bucket4_RO_policy"
+                ]
+            }
+          ]
 
-- bucket_ls.json: 包含bucket的所有tag等資料
+- bucket_ls.json: 
+    - 包含bucket的所有tag等資料，usage, use_ratio會預設為0
+    - status會預設為 `'Healthy'`
+    - 原本`project`的tag會被直接轉成`project_name`的tag
 
-        [
+          [
             {
                 "bucket_name": "bucket1",
                 "project_name": "project1",
                 "management_unit": "A1",
                 "privacy_ind": "Y",
                 "purpose": "model_used",
-                "save_type": "hard",
                 "quota": "20",
                 "usage": "0",
                 "use_ratio": "0",
@@ -230,13 +234,12 @@
                 "management_unit": "A1",
                 "privacy_ind": "N",
                 "purpose": "project_used",
-                "save_type": "hard",
                 "quota": "30",
                 "usage": "0",
                 "use_ratio": "0",
                 "status": "Healthy"
             }
-        ]
+          ]
 
 ### 使用方式： 
     cd src

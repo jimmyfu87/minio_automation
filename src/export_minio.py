@@ -73,7 +73,6 @@ def export_buckets(env_name):
                         'management_unit': unassign,
                         "privacy_ind": unassign,
                         "purpose": unassign,
-                        "save_type": unassign,
                         "quota": unassign,
                         "usage": '0',
                         "use_ratio": '0',
